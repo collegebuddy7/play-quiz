@@ -734,14 +734,29 @@ async function checkIfAlreadyDone(mobile) {
     const res  = await fetch(SHEET_URL + '?action=checkSubmission&quiz=' + enc(quizName) + '&mobile=' + enc(mobile));
     const data = await res.json();
     if (data.alreadySubmitted) {
-      finalScore   = data.score   || 0;
-      finalCorrect = data.correct || 0;
-      finalNeg     = data.negative || 0;
-      fillScoreScreen();
-      showScreen('screenScore');
-      loadLeaderboard();
-      showToast('Welcome back, ' + studentName + '! Aapka score dekho 👇');
-    } else {
+  finalScore   = data.score   || 0;
+  finalCorrect = data.correct || 0;
+  finalNeg     = data.negative || 0;
+
+  // Rebuild answers map from sheet so Review screen works
+  if (data.answers) {
+    try {
+      const log = typeof data.answers === 'string' ? JSON.parse(data.answers) : data.answers;
+      answers = {};
+      log.forEach(a => {
+        if (a.selected !== null && a.selected !== undefined) {
+          answers[a.q - 1] = { opt: a.selected, pts: a.pts || 0, time: a.time || 0 };
+        }
+      });
+    } catch(_) { answers = {}; }
+  }
+
+  buildReview();
+  fillScoreScreen();
+  showScreen('screenScore');
+  loadLeaderboard();
+  showToast('Welcome back, ' + studentName + '! Aapka score dekho 👇');
+} else {
       showAuthScreen();
     }
   } catch(_) {
