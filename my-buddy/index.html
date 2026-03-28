@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,261 +7,260 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
-/* ════════════════ ROOT ════════════════ */
-:root{
+:root {
   --navy:#1b3a5c; --navy2:#254e7a;
   --green:#52a823; --green2:#3d8019;
-  --gold:#f5a623; --gold2:#e8921a;
-  --bg:#f0f4f8; --red:#ef4444;
-  --bubble-user:#1b3a5c;
-  --bubble-bot:#fff;
+  --gold:#f5a623; --red:#ef4444;
   --msg-radius:18px;
+  --bg:#f0f4f8;
+  --surface:#ffffff;
+  --surface2:#f8fafc;
+  --border:#e2e8f0;
+  --text-primary:#1e293b;
+  --text-secondary:#64748b;
+  --text-muted:#94a3b8;
+  --bubble-bot:#ffffff;
+  --bubble-bot-text:#1e293b;
+  --nav-bg:#ffffff;
+  --nav-border:#e8edf3;
+  --input-bg:#f8fafc;
+  --shadow:rgba(27,58,92,.08);
+  --shadow-lg:rgba(27,58,92,.13);
+}
+[data-theme="dark"] {
+  --bg:#0f1923;
+  --surface:#1a2535;
+  --surface2:#1e2d40;
+  --border:#2a3a50;
+  --text-primary:#e8f0fa;
+  --text-secondary:#8faabe;
+  --text-muted:#4a6580;
+  --bubble-bot:#1e2d40;
+  --bubble-bot-text:#e8f0fa;
+  --nav-bg:#141f2e;
+  --nav-border:#1f2f42;
+  --input-bg:#1a2535;
+  --shadow:rgba(0,0,0,.25);
+  --shadow-lg:rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);}
+html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);
+          color:var(--text-primary);transition:background .25s,color .25s;}
 
-/* ════════════════ LOGIN SCREEN ════════════════ */
+/* ── LOGIN ── */
 #loginScreen{
-  min-height:100vh;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:1.5rem 1rem;
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:1.5rem 1rem;background:var(--bg);
 }
 .login-card{
-  background:#fff;border-radius:24px;width:100%;max-width:420px;
-  box-shadow:0 8px 40px rgba(27,58,92,.13);overflow:hidden;
+  background:var(--surface);border-radius:24px;width:100%;max-width:400px;
+  box-shadow:0 8px 40px var(--shadow-lg);overflow:hidden;
 }
 .login-hero{
-  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 55%,#1a5e38 100%);
+  background:linear-gradient(135deg,#1b3a5c 0%,#254e7a 55%,#1a5e38 100%);
   padding:2rem 1.5rem 1.75rem;text-align:center;position:relative;overflow:hidden;
 }
 .login-hero::after{
   content:'{ }';position:absolute;font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:8rem;color:rgba(255,255,255,.04);right:-1rem;bottom:-2rem;line-height:1;pointer-events:none;
+  font-size:8rem;color:rgba(255,255,255,.04);right:-1rem;bottom:-2rem;
+  line-height:1;pointer-events:none;
 }
-.login-logo{height:56px;object-fit:contain;margin-bottom:.9rem;
-            filter:drop-shadow(0 2px 8px rgba(0,0,0,.18));}
-.login-hero h1{
-  font-family:'Nunito',sans-serif;font-weight:900;color:#fff;
-  font-size:1.55rem;line-height:1.2;
+.login-logo{height:58px;object-fit:contain;margin-bottom:.85rem;
+            filter:drop-shadow(0 3px 8px rgba(0,0,0,.2));}
+.buddy-pill{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);
+  border-radius:99px;padding:.28rem .85rem;margin-bottom:.6rem;
 }
+.buddy-pill span{font-size:.68rem;font-weight:800;color:rgba(255,255,255,.88);
+                 font-family:'Nunito',sans-serif;letter-spacing:.05em;text-transform:uppercase;}
+.online-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;
+            animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.login-hero h1{font-family:'Nunito',sans-serif;font-weight:900;color:#fff;
+               font-size:1.55rem;line-height:1.2;}
 .login-hero h1 em{color:var(--gold);font-style:normal;}
-.login-hero p{color:rgba(255,255,255,.65);font-size:.82rem;margin-top:.3rem;}
-
+.login-hero p{color:rgba(255,255,255,.58);font-size:.79rem;margin-top:.3rem;}
 .login-body{padding:1.75rem 1.5rem;}
 .field{margin-bottom:1rem;}
-.lbl{display:block;font-weight:600;font-size:.82rem;color:#334155;margin-bottom:.28rem;}
-.fi{
-  width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:.65rem .9rem;
-  font-family:'Poppins',sans-serif;font-size:.87rem;color:#1e293b;background:#f8fafc;
-  outline:none;transition:border-color .2s,box-shadow .2s;
-}
-.fi:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,168,35,.13);background:#fff;}
+.lbl{display:block;font-weight:600;font-size:.79rem;color:var(--text-secondary);margin-bottom:.28rem;}
+.fi{width:100%;border:2px solid var(--border);border-radius:11px;padding:.65rem .9rem;
+    font-family:'Poppins',sans-serif;font-size:.86rem;color:var(--text-primary);
+    background:var(--input-bg);outline:none;transition:border-color .2s,box-shadow .2s;}
+.fi:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,168,35,.13);background:var(--surface);}
 .fi.err{border-color:var(--red)!important;}
-.et{font-size:.72rem;color:var(--red);margin-top:.22rem;display:none;}
-
-.btn{
-  width:100%;border:none;border-radius:12px;padding:.9rem;
-  font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  gap:.5rem;transition:transform .15s,box-shadow .15s;
-}
+.et{font-size:.71rem;color:var(--red);margin-top:.22rem;display:none;}
+.btn{width:100%;border:none;border-radius:12px;padding:.88rem;
+     font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;
+     display:flex;align-items:center;justify-content:center;gap:.5rem;
+     transition:transform .15s,opacity .15s;}
 .btn:hover{transform:translateY(-1px);}
 .btn:disabled{opacity:.55;cursor:not-allowed;transform:none!important;}
-.btn-green{
-  background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;
-  box-shadow:0 4px 16px rgba(82,168,35,.35);
-}
-.spin{
-  width:16px;height:16px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;
-  border-radius:50%;animation:sp .7s linear infinite;display:none;
-}
+.btn-green{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;
+           box-shadow:0 4px 16px rgba(82,168,35,.35);}
+.spin{width:16px;height:16px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;
+      border-radius:50%;animation:sp .7s linear infinite;display:none;}
 @keyframes sp{to{transform:rotate(360deg)}}
+.login-footer{text-align:center;font-size:.72rem;color:var(--text-muted);margin-top:.85rem;}
 
-.login-footer{text-align:center;font-size:.75rem;color:#64748b;margin-top:.9rem;}
+/* ── CHAT SCREEN ── */
+#chatScreen{display:none;height:100vh;flex-direction:column;background:var(--bg);}
 
-/* ════════════════ CHAT SCREEN ════════════════ */
-#chatScreen{display:none;height:100vh;flex-direction:column;}
-
-/* Nav */
-.chat-nav{
-  background:#fff;border-bottom:1.5px solid #e8edf3;
-  box-shadow:0 2px 12px rgba(27,58,92,.08);
-  position:sticky;top:0;z-index:100;flex-shrink:0;
-}
-.chat-nav-inner{
-  max-width:700px;margin:0 auto;
-  display:flex;align-items:center;gap:.75rem;padding:.5rem 1rem;
-}
-.chat-logo{height:36px;object-fit:contain;flex-shrink:0;}
+.chat-nav{background:var(--nav-bg);border-bottom:1.5px solid var(--nav-border);
+          box-shadow:0 2px 10px var(--shadow);flex-shrink:0;z-index:100;}
+.chat-nav-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;
+                gap:.65rem;padding:.52rem 1rem;}
+.chat-logo{height:32px;object-fit:contain;flex-shrink:0;}
 .chat-nav-info{flex:1;}
-.chat-nav-name{
-  font-family:'Nunito',sans-serif;font-weight:900;color:var(--navy);font-size:.95rem;line-height:1.1;
-}
-.chat-nav-status{font-size:.7rem;color:var(--green);font-weight:600;display:flex;align-items:center;gap:.3rem;}
-.status-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.logout-btn{
-  background:none;border:1.5px solid #e2e8f0;border-radius:8px;
-  padding:.28rem .65rem;font-size:.7rem;font-weight:700;color:#94a3b8;
-  cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;
-}
+.chat-nav-name{font-family:'Nunito',sans-serif;font-weight:900;color:var(--text-primary);
+               font-size:.9rem;line-height:1.1;}
+.chat-nav-status{font-size:.67rem;color:var(--green);font-weight:600;
+                 display:flex;align-items:center;gap:.28rem;margin-top:.04rem;}
+.status-dot{width:6px;height:6px;background:var(--green);border-radius:50%;
+            animation:blink 2s infinite;}
+.nav-actions{display:flex;gap:.45rem;align-items:center;}
+.theme-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:99px;
+           width:34px;height:34px;cursor:pointer;display:flex;align-items:center;
+           justify-content:center;font-size:.95rem;transition:all .2s;flex-shrink:0;}
+.theme-btn:hover{border-color:var(--green);}
+.logout-btn{background:none;border:1.5px solid var(--border);border-radius:8px;
+            padding:.26rem .58rem;font-size:.67rem;font-weight:700;color:var(--text-muted);
+            cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
 .logout-btn:hover{border-color:var(--red);color:var(--red);}
 
-/* Messages area */
-#chatBox{
-  flex:1;overflow-y:auto;padding:1.25rem 1rem;
-  display:flex;flex-direction:column;gap:.75rem;
-  max-width:700px;width:100%;margin:0 auto;align-self:center;
-  width:100%;
-}
-/* Scroll styling */
-#chatBox::-webkit-scrollbar{width:4px;}
-#chatBox::-webkit-scrollbar-track{background:transparent;}
-#chatBox::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:99px;}
+#chatBox{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;
+         gap:.65rem;max-width:700px;width:100%;margin:0 auto;}
+#chatBox::-webkit-scrollbar{width:3px;}
+#chatBox::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
 
 /* Welcome card */
-.welcome-card{
-  background:linear-gradient(135deg,var(--navy),var(--navy2));
-  border-radius:18px;padding:1.25rem 1.15rem;text-align:center;
-  animation:fadeUp .4s ease;
-}
-.welcome-card .w-emoji{font-size:2.2rem;margin-bottom:.4rem;}
-.welcome-card h2{
-  font-family:'Nunito',sans-serif;font-weight:900;color:#fff;font-size:1.05rem;
-}
-.welcome-card h2 em{color:var(--gold);font-style:normal;}
-.welcome-card p{color:rgba(255,255,255,.62);font-size:.78rem;margin-top:.3rem;line-height:1.55;}
-.lang-chips{display:flex;gap:.4rem;justify-content:center;margin-top:.65rem;flex-wrap:wrap;}
-.lang-chip{
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
-  border-radius:99px;padding:.2rem .7rem;font-size:.7rem;color:#a8e063;font-weight:600;
-}
-
-/* Message bubbles */
-.msg-row{display:flex;gap:.55rem;animation:fadeUp .25s ease;}
+.welcome-card{background:linear-gradient(135deg,var(--navy),var(--navy2));
+              border-radius:20px;padding:1.3rem 1.15rem;text-align:center;
+              animation:fadeUp .4s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.w-avatar{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.1);
+          border:2px solid rgba(255,255,255,.2);margin:0 auto .55rem;
+          display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
+.welcome-card h2{font-family:'Nunito',sans-serif;font-weight:900;color:#fff;font-size:1rem;}
+.welcome-card h2 em{color:var(--gold);font-style:normal;}
+.welcome-card p{color:rgba(255,255,255,.55);font-size:.75rem;margin-top:.25rem;line-height:1.55;}
+.lang-chips{display:flex;gap:.32rem;justify-content:center;margin-top:.55rem;flex-wrap:wrap;}
+.lang-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+           border-radius:99px;padding:.16rem .6rem;font-size:.66rem;color:#a8e063;font-weight:700;}
+
+/* Bubbles */
+.msg-row{display:flex;gap:.45rem;animation:fadeUp .22s ease;}
 .msg-row.user{flex-direction:row-reverse;}
-.msg-avatar{
-  width:32px;height:32px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:.85rem;
-  background:var(--navy);margin-top:auto;
-}
-.msg-row.user .msg-avatar{background:var(--green);}
-.msg-bubble{
-  max-width:75%;padding:.7rem 1rem;border-radius:var(--msg-radius);
-  font-size:.85rem;line-height:1.6;box-shadow:0 2px 8px rgba(27,58,92,.08);
-}
-.msg-row.bot .msg-bubble{
-  background:#fff;color:#1e293b;border-bottom-left-radius:4px;
-}
-.msg-row.user .msg-bubble{
-  background:linear-gradient(135deg,var(--navy),var(--navy2));
-  color:#fff;border-bottom-right-radius:4px;
-}
-/* Markdown inside bubbles */
-.msg-bubble p{margin-bottom:.4rem;}
+.msg-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;
+            display:flex;align-items:center;justify-content:center;
+            font-size:.75rem;align-self:flex-end;margin-bottom:1.15rem;}
+.msg-row.bot  .msg-avatar{background:linear-gradient(135deg,var(--navy),var(--navy2));}
+.msg-row.user .msg-avatar{background:linear-gradient(135deg,var(--green),var(--green2));}
+.msg-col{display:flex;flex-direction:column;max-width:78%;}
+.msg-row.user .msg-col{align-items:flex-end;}
+.msg-bubble{padding:.68rem .95rem;border-radius:var(--msg-radius);
+            font-size:.83rem;line-height:1.65;box-shadow:0 1px 6px var(--shadow);}
+.msg-row.bot  .msg-bubble{background:var(--bubble-bot);color:var(--bubble-bot-text);
+                           border-bottom-left-radius:4px;}
+.msg-row.user .msg-bubble{background:linear-gradient(135deg,var(--navy),var(--navy2));
+                           color:#fff;border-bottom-right-radius:4px;}
+/* Markdown */
+.msg-bubble p{margin-bottom:.32rem;}
 .msg-bubble p:last-child{margin-bottom:0;}
 .msg-bubble strong{font-weight:700;}
-.msg-bubble ul,.msg-bubble ol{padding-left:1.2rem;margin:.3rem 0;}
-.msg-bubble li{margin-bottom:.2rem;}
-.msg-bubble code{
-  background:rgba(27,58,92,.08);border-radius:4px;
-  padding:.1rem .35rem;font-size:.8rem;font-family:monospace;
-}
+.msg-bubble ul,.msg-bubble ol{padding-left:1.1rem;margin:.22rem 0;}
+.msg-bubble li{margin-bottom:.18rem;}
+.msg-bubble h1,.msg-bubble h2,.msg-bubble h3{font-family:'Nunito',sans-serif;
+  font-weight:900;margin:.35rem 0 .18rem;}
+.msg-bubble code{background:rgba(82,168,35,.1);border-radius:5px;
+                 padding:.07rem .3rem;font-size:.77rem;font-family:monospace;}
 .msg-row.user .msg-bubble code{background:rgba(255,255,255,.15);}
-.msg-bubble pre{
-  background:rgba(27,58,92,.06);border-radius:8px;
-  padding:.65rem .85rem;overflow-x:auto;margin:.4rem 0;
-}
-.msg-row.user .msg-bubble pre{background:rgba(255,255,255,.12);}
-.msg-time{
-  font-size:.6rem;color:#94a3b8;margin-top:.25rem;
-  text-align:right;
-}
-.msg-row.user .msg-time{color:rgba(255,255,255,.5);}
+.msg-bubble pre{background:rgba(27,58,92,.06);border-radius:10px;
+                padding:.55rem .75rem;overflow-x:auto;margin:.3rem 0;}
+[data-theme="dark"] .msg-bubble pre{background:rgba(0,0,0,.3);}
+.msg-bubble pre code{background:none;padding:0;}
+.msg-bubble blockquote{border-left:3px solid var(--green);padding-left:.55rem;
+                       color:var(--text-secondary);margin:.25rem 0;font-style:italic;}
+.msg-time{font-size:.58rem;color:var(--text-muted);margin-top:.18rem;padding:0 .15rem;}
+.msg-row.user .msg-time{text-align:right;}
 
-/* Typing indicator */
-.typing-bubble{
-  background:#fff;border-radius:var(--msg-radius);border-bottom-left-radius:4px;
-  padding:.7rem 1rem;box-shadow:0 2px 8px rgba(27,58,92,.08);
-  display:flex;align-items:center;gap:.3rem;
-}
-.typing-dot{
-  width:7px;height:7px;border-radius:50%;background:#94a3b8;
-  animation:typingBounce 1.2s infinite ease-in-out;
-}
-.typing-dot:nth-child(2){animation-delay:.2s;}
-.typing-dot:nth-child(3){animation-delay:.4s;}
-@keyframes typingBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+/* Typing */
+.typing-bubble{background:var(--bubble-bot);border-radius:var(--msg-radius);
+               border-bottom-left-radius:4px;padding:.62rem .85rem;
+               box-shadow:0 1px 6px var(--shadow);
+               display:flex;align-items:center;gap:.32rem;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted);
+            animation:bounce 1.2s infinite ease-in-out;}
+.typing-dot:nth-child(2){animation-delay:.18s;}
+.typing-dot:nth-child(3){animation-delay:.36s;}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
 
-/* Input bar */
-.chat-input-bar{
-  background:#fff;border-top:1.5px solid #e8edf3;
-  box-shadow:0 -4px 16px rgba(27,58,92,.06);
-  padding:.65rem 1rem;flex-shrink:0;
-}
-.chat-input-inner{
-  max-width:700px;margin:0 auto;display:flex;gap:.55rem;align-items:flex-end;
-}
-#userInput{
-  flex:1;border:2px solid #e2e8f0;border-radius:12px;
-  padding:.62rem .9rem;font-family:'Poppins',sans-serif;font-size:.87rem;
-  color:#1e293b;background:#f8fafc;outline:none;resize:none;
-  max-height:120px;transition:border-color .2s,box-shadow .2s;
-  line-height:1.5;
-}
-#userInput:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 3px rgba(82,168,35,.13);background:#fff;
-}
-.send-btn{
-  background:linear-gradient(135deg,var(--green),var(--green2));
-  border:none;border-radius:12px;width:46px;height:46px;flex-shrink:0;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 14px rgba(82,168,35,.35);transition:transform .15s,box-shadow .15s;
-}
-.send-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(82,168,35,.4);}
-.send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.send-btn svg{width:20px;height:20px;fill:#fff;}
+/* Date separator */
+.date-sep{text-align:center;font-size:.62rem;font-weight:700;color:var(--text-muted);
+          letter-spacing:.05em;display:flex;align-items:center;gap:.45rem;margin:.1rem 0;}
+.date-sep::before,.date-sep::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* Suggested prompts */
-.suggestions{
-  display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;
-  max-width:700px;margin-left:auto;margin-right:auto;padding:0 1rem;
-}
-.sug-chip{
-  background:#fff;border:1.5px solid #e2e8f0;border-radius:99px;
-  padding:.3rem .75rem;font-size:.72rem;font-weight:600;color:var(--navy);
-  cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'Nunito',sans-serif;
-}
-.sug-chip:hover{border-color:var(--green);color:var(--green2);background:#f0fdf4;}
+/* Suggestions */
+#suggestionsWrap{padding:.38rem 1rem .28rem;max-width:700px;width:100%;margin:0 auto;}
+.suggestions{display:flex;gap:.38rem;flex-wrap:nowrap;overflow-x:auto;padding-bottom:.15rem;}
+.suggestions::-webkit-scrollbar{display:none;}
+.sug-chip{background:var(--surface);border:1.5px solid var(--border);border-radius:99px;
+          padding:.3rem .75rem;font-size:.69rem;font-weight:700;color:var(--text-secondary);
+          cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'Nunito',sans-serif;
+          flex-shrink:0;}
+.sug-chip:hover{border-color:var(--green);color:var(--green2);
+                background:rgba(82,168,35,.07);}
+
+/* Input */
+.chat-input-bar{background:var(--nav-bg);border-top:1.5px solid var(--nav-border);
+                box-shadow:0 -3px 12px var(--shadow);padding:.58rem 1rem;flex-shrink:0;}
+.chat-input-inner{max-width:700px;margin:0 auto;display:flex;gap:.45rem;align-items:flex-end;}
+#userInput{flex:1;border:2px solid var(--border);border-radius:14px;padding:.6rem .9rem;
+           font-family:'Poppins',sans-serif;font-size:.86rem;color:var(--text-primary);
+           background:var(--input-bg);outline:none;resize:none;max-height:110px;
+           transition:border-color .2s,box-shadow .2s;line-height:1.5;}
+#userInput::placeholder{color:var(--text-muted);}
+#userInput:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,168,35,.12);
+                 background:var(--surface);}
+.send-btn{background:linear-gradient(135deg,var(--green),var(--green2));border:none;
+          border-radius:13px;width:43px;height:43px;flex-shrink:0;cursor:pointer;
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 3px 12px rgba(82,168,35,.35);transition:transform .15s,box-shadow .15s;}
+.send-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(82,168,35,.42);}
+.send-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.send-btn svg{width:18px;height:18px;fill:#fff;}
 
 /* Toast */
-.toast{
-  position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);
-  background:#1e293b;color:#fff;padding:.5rem 1.1rem;border-radius:99px;
-  font-size:.77rem;font-weight:600;z-index:600;opacity:0;
-  transition:opacity .2s;pointer-events:none;white-space:nowrap;
-}
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);
+       background:#1e293b;color:#fff;padding:.48rem 1.1rem;border-radius:99px;
+       font-size:.74rem;font-weight:600;z-index:600;opacity:0;
+       transition:opacity .2s;pointer-events:none;white-space:nowrap;
+       box-shadow:0 4px 16px rgba(0,0,0,.25);}
+[data-theme="dark"] .toast{background:#e8f0fa;color:#1e293b;}
 .toast.show{opacity:1;}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════ LOGIN SCREEN ══════════════════ -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-hero">
       <img src="cbdlogo.png" alt="College Buddy" class="login-logo"
-           onerror="this.outerHTML='<div style=\'font-family:Nunito,sans-serif;font-weight:900;font-size:1.4rem;color:#fff;margin-bottom:.9rem\'><span style=\'color:var(--gold)\'>College</span>Buddy</div>'"/>
-      <h1>Meet <em>My Buddy</em> 🤖</h1>
-      <p>Apna AI study friend — Hindi, English, ya Hinglish mein baat karo!</p>
+           onerror="this.outerHTML='<div style=\'font-family:Nunito,sans-serif;font-weight:900;font-size:1.4rem;color:#fff;margin-bottom:.85rem\'>College<span style=\'color:#f5a623\'>Buddy</span></div>'"/>
+      <div class="buddy-pill">
+        <span class="online-dot"></span>
+        <span>My Buddy AI</span>
+      </div>
+      <h1>Your <em>Smart</em> Study Dost 🤖</h1>
+      <p>Hindi · English · Hinglish — jo chaaho!</p>
     </div>
     <div class="login-body">
       <div class="field">
         <label class="lbl">Mobile Number</label>
         <input type="tel" id="lMob" class="fi" placeholder="10-digit number"
                maxlength="10" inputmode="numeric"/>
-        <p class="et" id="eLMob">Valid 10-digit mobile number chahiye.</p>
+        <p class="et" id="eLMob">Valid 10-digit number chahiye.</p>
       </div>
       <div class="field" style="margin-bottom:1.25rem;">
         <label class="lbl">Password</label>
@@ -277,45 +276,44 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);}
   </div>
 </div>
 
-<!-- ══════════════════ CHAT SCREEN ══════════════════ -->
+<!-- CHAT -->
 <div id="chatScreen">
-
-  <!-- Nav -->
   <div class="chat-nav">
     <div class="chat-nav-inner">
-      <img src="cbdlogo.png" alt="College Buddy" class="chat-logo"
-           onerror="this.outerHTML='<span style=\'font-family:Nunito,sans-serif;font-weight:900;font-size:.9rem;color:#1b3a5c\'>CB</span>'"/>
+      <img src="cbdlogo.png" alt="CB" class="chat-logo"
+           onerror="this.style.display='none'"/>
       <div class="chat-nav-info">
         <div class="chat-nav-name">My Buddy 🤖</div>
         <div class="chat-nav-status">
-          <span class="status-dot"></span>Online — always here for you
+          <span class="status-dot"></span>Online · always here for you
         </div>
       </div>
-      <button class="logout-btn" onclick="logout()">Logout</button>
+      <div class="nav-actions">
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
     </div>
   </div>
 
-  <!-- Messages -->
-  <div id="chatBox">
-    <!-- Welcome card injected by JS -->
+  <div id="chatBox"></div>
+
+  <div id="suggestionsWrap" style="display:none;">
+    <div class="suggestions">
+      <div class="sug-chip" onclick="useSuggestion('DSA kya hota hai?')">📚 DSA kya hai?</div>
+      <div class="sug-chip" onclick="useSuggestion('Mujhe study tips do')">💡 Study tips</div>
+      <div class="sug-chip" onclick="useSuggestion('Array aur Linked List mein difference kya hai?')">🧠 Array vs Linked List</div>
+      <div class="sug-chip" onclick="useSuggestion('Exam ki preparation kaise karein?')">🎯 Exam prep</div>
+      <div class="sug-chip" onclick="useSuggestion('Operating System kya hai? Features batao')">💻 OS kya hai?</div>
+      <div class="sug-chip" onclick="useSuggestion('Mujhe motivate karo!')">🔥 Motivate karo</div>
+    </div>
   </div>
 
-  <!-- Suggested prompts -->
-  <div class="suggestions" id="suggestions">
-    <div class="sug-chip" onclick="useSuggestion(this)">📚 DSA kya hai?</div>
-    <div class="sug-chip" onclick="useSuggestion(this)">💡 Study tips do</div>
-    <div class="sug-chip" onclick="useSuggestion(this)">🧠 Array vs Linked List</div>
-    <div class="sug-chip" onclick="useSuggestion(this)">🎯 Exam preparation</div>
-  </div>
-
-  <!-- Input -->
   <div class="chat-input-bar">
     <div class="chat-input-inner">
-      <textarea id="userInput" rows="1" placeholder="Kuch bhi pucho — Hindi, English, Hinglish mein..."></textarea>
+      <textarea id="userInput" rows="1"
+        placeholder="Kuch bhi pucho — Hindi, English, Hinglish..."></textarea>
       <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
     </div>
   </div>
@@ -324,60 +322,65 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);}
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════ CONFIG ════════
-const QUIZ_SHEET_URL  = 'https://script.google.com/macros/s/AKfycbzlYbKWmbdnFQJbq9uBCmt56kobFGoszXwYr2nPDkEdfPuNpUBUs1SUNV4JkpBuxyLgNw/exec';
+const QUIZ_SHEET_URL   = 'https://script.google.com/macros/s/AKfycbzlYbKWmbdnFQJbq9uBCmt56kobFGoszXwYr2nPDkEdfPuNpUBUs1SUNV4JkpBuxyLgNw/exec';
 const BUDDY_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx25oHMTmoCt2o9cHw3h4fwuIYhBqB-KPF8dqjGOk36dxS_fA1FPnvtU4BOd61jiuf6rg/exec';
-
-const LS_USER = 'cb_quiz_user';
+const LS_USER    = 'cb_quiz_user';
 const LS_HISTORY = 'cb_buddy_history';
+const LS_THEME   = 'cb_buddy_theme';
 
-// ════════ STATE ════════
 let studentName = '';
-let studentMob  = '';
-// Full conversation history sent to AI each time for context
 let conversationHistory = [];
 let isBotTyping = false;
+let suggestionsShown = false;
 
-// System prompt — personality + language constraint
-const SYSTEM_PROMPT = `You are "My Buddy", a friendly and helpful AI study companion for college students in Bihar, India. You are part of the College Buddy quiz platform.
+// CRITICAL fix: system prompt now strictly enforces single-language replies
+const SYSTEM_PROMPT = `You are "My Buddy", a friendly AI study companion for college students in Bihar, India.
 
-Your personality:
-- Warm, encouraging, and supportive like a smart senior/dost
-- You use a mix of English, Hindi, and Hinglish naturally (match the user's language)
-- You are knowledgeable about college subjects, especially CS topics like DSA, Programming, etc.
-- You motivate students and help them understand concepts simply
-- You celebrate their wins and encourage them when they struggle
-- Keep responses concise and easy to understand
-- Use emojis naturally but not excessively
+CRITICAL LANGUAGE RULE — this is the most important instruction:
+- Detect the language of the user's message
+- If Hindi (Devanagari or Roman Hindi) → reply ONLY in Hindi/Hinglish. Do NOT add English translation.
+- If English → reply ONLY in English. Do NOT add Hindi translation.
+- If Hinglish → reply ONLY in Hinglish. Do NOT add English translation in brackets.
+- NEVER write the same thing in two languages. Pick one and stick to it.
 
-IMPORTANT RULES:
-- ONLY respond in English, Hindi, or Hinglish. If the user writes in any other language, politely tell them you only support English, Hindi, and Hinglish.
-- Never be rude or discouraging
-- If you don't know something, say so honestly
-- You know the student's name and use it occasionally to be personal`;
+Personality:
+- Warm, encouraging, like a smart senior/dost
+- Expert in college subjects: DSA, Programming, OS, DBMS, Networks, Math etc.
+- Concise and clear responses with helpful examples
+- Use emojis naturally, not excessively
+- Occasionally use student's first name`;
 
-// ════════ BOOT ════════
 window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem(LS_THEME) || 'light';
+  applyTheme(savedTheme);
+
   const saved = getSavedSession();
   if (saved) {
     studentName = saved.name;
-    studentMob  = saved.mobile;
     loadHistory();
     showChatScreen();
   }
 
-  // Auto-resize textarea
   const ta = document.getElementById('userInput');
   ta.addEventListener('input', () => {
     ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    ta.style.height = Math.min(ta.scrollHeight, 110) + 'px';
   });
   ta.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   });
 });
 
-// ════════ SESSION ════════
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem(LS_THEME, theme);
+}
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+
 function getSavedSession() {
   try { return JSON.parse(localStorage.getItem(LS_USER)); } catch(_) { return null; }
 }
@@ -387,153 +390,128 @@ function saveHistory() {
 function loadHistory() {
   try {
     const h = localStorage.getItem(LS_HISTORY);
-    if (h) conversationHistory = JSON.parse(h);
+    conversationHistory = h ? JSON.parse(h) : [];
   } catch(_) { conversationHistory = []; }
 }
-function clearHistory() {
-  conversationHistory = [];
-  localStorage.removeItem(LS_HISTORY);
-}
 
-// ════════ LOGIN ════════
 async function handleLogin() {
   const mob  = document.getElementById('lMob').value.trim();
   const pass = document.getElementById('lPass').value.trim();
-  const se   = (id,v) => document.getElementById(id).style.display = v ? 'block' : 'none';
-  const fe   = (id,v) => document.getElementById(id).classList.toggle('err', v);
+  const se = (id,v) => document.getElementById(id).style.display = v ? 'block' : 'none';
+  const fe = (id,v) => document.getElementById(id).classList.toggle('err', v);
   let ok = true;
-
   if (!/^\d{10}$/.test(mob)) { fe('lMob',true); se('eLMob',true); ok=false; }
   else { fe('lMob',false); se('eLMob',false); }
   if (!pass) { fe('lPass',true); se('eLPass',true); ok=false; }
   else { fe('lPass',false); se('eLPass',false); }
   if (!ok) return;
 
-  setBtnLoad(true);
+  document.getElementById('loginBtn').disabled = true;
+  document.getElementById('loginSpin').style.display = 'block';
+  document.getElementById('loginTxt').style.display  = 'none';
   try {
     const res  = await fetch(QUIZ_SHEET_URL + '?action=loginUser&mobile=' + encodeURIComponent(mob) + '&password=' + encodeURIComponent(pass));
     const data = await res.json();
     if (data.status === 'ok') {
       studentName = data.user.name;
-      studentMob  = mob;
       localStorage.setItem(LS_USER, JSON.stringify({ ...data.user, mobile: mob }));
       loadHistory();
       showChatScreen();
-    } else {
-      showToast(data.message || 'Wrong mobile or password');
-    }
-  } catch(_) {
-    showToast('Network error. Try again.');
-  }
-  setBtnLoad(false);
+    } else { showToast(data.message || 'Wrong mobile or password'); }
+  } catch(_) { showToast('Network error. Try again.'); }
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginSpin').style.display = 'none';
+  document.getElementById('loginTxt').style.display  = 'inline';
 }
 
-function setBtnLoad(loading) {
-  document.getElementById('loginBtn').disabled       = loading;
-  document.getElementById('loginSpin').style.display = loading ? 'block' : 'none';
-  document.getElementById('loginTxt').style.display  = loading ? 'none'  : 'inline';
-}
-
-// ════════ SCREENS ════════
 function showChatScreen() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('chatScreen').style.display  = 'flex';
-
   const chatBox = document.getElementById('chatBox');
+  chatBox.innerHTML = '';
+  suggestionsShown = false;
+  appendDateSep('Today');
 
-  // If history exists, replay it; else show welcome
   if (conversationHistory.length > 0) {
-    chatBox.innerHTML = '';
-    renderWelcomeCard(false); // smaller welcome
     conversationHistory.forEach(msg => {
       if (msg.role === 'user') appendUserBubble(msg.content, false);
       else if (msg.role === 'assistant') appendBotBubble(msg.content, false);
     });
     scrollBottom();
   } else {
-    chatBox.innerHTML = '';
-    renderWelcomeCard(true);
+    renderWelcome();
+    document.getElementById('suggestionsWrap').style.display = 'block';
+    suggestionsShown = true;
   }
 }
 
 function logout() {
   if (!confirm('Logout karna chahte ho?')) return;
   localStorage.removeItem(LS_USER);
-  clearHistory();
+  conversationHistory = [];
+  localStorage.removeItem(LS_HISTORY);
   document.getElementById('chatScreen').style.display  = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('lMob').value  = '';
   document.getElementById('lPass').value = '';
-  document.getElementById('chatBox').innerHTML = '';
 }
 
-// ════════ WELCOME CARD ════════
-function renderWelcomeCard(showSuggestions) {
+function renderWelcome() {
   const first = studentName.split(' ')[0];
-  const card = document.createElement('div');
-  card.className = 'welcome-card';
-  card.innerHTML = `
-    <div class="w-emoji">👋</div>
+  const el = document.createElement('div');
+  el.className = 'welcome-card';
+  el.innerHTML = `
+    <div class="w-avatar">🤖</div>
     <h2>Namaste, <em>${esc(first)}!</em></h2>
-    <p>Main hoon <strong style="color:var(--gold);">My Buddy</strong> — tera apna AI study dost!<br>
-    Koi bhi sawal pucho — subjects, tips, ya bas baatein karo 😊</p>
+    <p>Main hoon <strong style="color:var(--gold)">My Buddy</strong> — tera apna AI study dost!<br>
+    Koi bhi sawal pucho, main yahan hoon 😊</p>
     <div class="lang-chips">
       <span class="lang-chip">🇮🇳 Hindi</span>
       <span class="lang-chip">🇬🇧 English</span>
       <span class="lang-chip">🤙 Hinglish</span>
     </div>`;
-  document.getElementById('chatBox').appendChild(card);
-  if (showSuggestions) document.getElementById('suggestions').style.display = 'flex';
+  document.getElementById('chatBox').appendChild(el);
 }
 
-// ════════ SEND MESSAGE ════════
 async function sendMessage() {
   if (isBotTyping) return;
   const ta  = document.getElementById('userInput');
   const msg = ta.value.trim();
   if (!msg) return;
 
-  // Hide suggestions after first message
-  document.getElementById('suggestions').style.display = 'none';
+  if (suggestionsShown) {
+    document.getElementById('suggestionsWrap').style.display = 'none';
+    suggestionsShown = false;
+  }
 
   ta.value = '';
   ta.style.height = 'auto';
-
   appendUserBubble(msg, true);
   conversationHistory.push({ role: 'user', content: msg });
   saveHistory();
 
-  // Show typing
-  const typingId = 'typing-' + Date.now();
+  const typingId = 't' + Date.now();
   appendTyping(typingId);
   isBotTyping = true;
   document.getElementById('sendBtn').disabled = true;
 
   try {
-    // Build messages array: system + full history
     const messages = [
-      { role: 'user', content: SYSTEM_PROMPT + '\n\nStudent name: ' + studentName }
+      { role: 'user',      content: SYSTEM_PROMPT + '\n\nStudent name: ' + studentName.split(' ')[0] },
+      { role: 'assistant', content: 'Understood! I will respond in exactly the same language as the user — never mixing two languages in the same reply.' },
+      ...conversationHistory.slice(-18)
     ];
-    // Add conversation history (last 20 turns max to avoid token overflow)
-    const recent = conversationHistory.slice(-20);
-    recent.forEach(m => messages.push({ role: m.role, content: m.content }));
 
-    const res = await fetch(
-      BUDDY_SCRIPT_URL + '?action=chat&messages=' + encodeURIComponent(JSON.stringify(messages))
-    );
+    const res  = await fetch(BUDDY_SCRIPT_URL + '?action=chat&messages=' + encodeURIComponent(JSON.stringify(messages)));
     const data = await res.json();
-
     document.getElementById(typingId)?.remove();
-
     const reply = data.reply || '⚠️ Kuch problem aayi. Dobara try karo!';
     conversationHistory.push({ role: 'assistant', content: reply });
     saveHistory();
     appendBotBubble(reply, true);
-
-  } catch(err) {
+  } catch(_) {
     document.getElementById(typingId)?.remove();
-    const errMsg = '⚠️ Network error. Internet check karo aur dobara try karo.';
-    appendBotBubble(errMsg, true);
+    appendBotBubble('⚠️ Network error. Internet check karo aur dobara try karo.', true);
   }
 
   isBotTyping = false;
@@ -541,14 +519,14 @@ async function sendMessage() {
   document.getElementById('userInput').focus();
 }
 
-// ════════ BUBBLE HELPERS ════════
 function appendUserBubble(text, animate) {
   const chatBox = document.getElementById('chatBox');
   const row = document.createElement('div');
-  row.className = 'msg-row user' + (animate ? '' : ' no-anim');
+  row.className = 'msg-row user';
+  if (!animate) row.style.animation = 'none';
   row.innerHTML = `
     <div class="msg-avatar">😊</div>
-    <div>
+    <div class="msg-col">
       <div class="msg-bubble">${esc(text)}</div>
       <div class="msg-time">${timeNow()}</div>
     </div>`;
@@ -559,10 +537,11 @@ function appendUserBubble(text, animate) {
 function appendBotBubble(text, animate) {
   const chatBox = document.getElementById('chatBox');
   const row = document.createElement('div');
-  row.className = 'msg-row bot' + (animate ? '' : ' no-anim');
+  row.className = 'msg-row bot';
+  if (!animate) row.style.animation = 'none';
   row.innerHTML = `
     <div class="msg-avatar">🤖</div>
-    <div>
+    <div class="msg-col">
       <div class="msg-bubble">${marked.parse(text)}</div>
       <div class="msg-time">${timeNow()}</div>
     </div>`;
@@ -578,25 +557,27 @@ function appendTyping(id) {
   row.innerHTML = `
     <div class="msg-avatar">🤖</div>
     <div class="typing-bubble">
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
     </div>`;
   chatBox.appendChild(row);
   scrollBottom();
 }
 
-// ════════ SUGGESTIONS ════════
-function useSuggestion(el) {
-  document.getElementById('userInput').value = el.textContent.replace(/^[^\w]+/, '').trim();
-  document.getElementById('userInput').focus();
+function appendDateSep(label) {
+  const el = document.createElement('div');
+  el.className = 'date-sep';
+  el.innerHTML = `<span>${label}</span>`;
+  document.getElementById('chatBox').appendChild(el);
+}
+
+function useSuggestion(text) {
+  document.getElementById('userInput').value = text;
   sendMessage();
 }
 
-// ════════ UTILS ════════
 function scrollBottom() {
   const cb = document.getElementById('chatBox');
-  setTimeout(() => cb.scrollTo({ top: cb.scrollHeight, behavior: 'smooth' }), 50);
+  setTimeout(() => cb.scrollTo({ top: cb.scrollHeight, behavior: 'smooth' }), 60);
 }
 function timeNow() {
   return new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
@@ -610,6 +591,5 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 </script>
-
 </body>
 </html>
