@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>College Buddy – Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════ ROOT ════════════════ */
+:root{
+  --navy:#1b3a5c; --green:#52a823; --green2:#3d8019;
+  --gold:#f5a623; --bg:#f0f4f8; --red:#ef4444; --red2:#dc2626;
+  --blue:#3b82f6; --orange:#f97316;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);min-height:100vh;
+     padding-bottom:80px;} /* room for sticky footer */
+
+/* ════════════════ NAV ════════════════ */
+nav{background:#fff;position:sticky;top:0;z-index:300;
+    box-shadow:0 2px 12px rgba(27,58,92,.1);border-bottom:1.5px solid #e8edf3;}
+.nav-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;
+           gap:.7rem;padding:.45rem 1rem;}
+.nav-logo{height:40px;object-fit:contain;flex-shrink:0;padding:2px;}
+.nav-title{font-family:'Nunito',sans-serif;font-weight:900;color:var(--navy);
+           font-size:.95rem;flex:1;}
+.nav-badge{background:var(--gold);color:var(--navy);font-family:'Nunito',sans-serif;
+           font-weight:800;font-size:.68rem;padding:.22rem .65rem;
+           border-radius:99px;white-space:nowrap;}
+
+/* ════════════════ SCREENS ════════════════ */
+.screen{display:none;max-width:640px;margin:0 auto;padding:1.25rem 1rem 1.5rem;}
+.screen.active{display:block;animation:fadeUp .35s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════════════════ SHARED COMPONENTS ════════════════ */
+.card{background:#fff;border-radius:18px;
+      box-shadow:0 4px 24px rgba(27,58,92,.09);overflow:hidden;margin-bottom:1rem;}
+.card-body{padding:1.4rem 1.25rem;}
+@media(min-width:500px){.card-body{padding:1.75rem;}}
+
+.hero-strip{background:linear-gradient(135deg,#1b3a5c 0%,#1e4d7a 50%,#1a5e38 100%);
+            padding:1.4rem 1rem 1.65rem;text-align:center;position:relative;
+            overflow:hidden;margin-bottom:1rem;}
+.hero-strip::after{content:'{ }';position:absolute;font-size:9rem;
+                   font-family:'Nunito',sans-serif;font-weight:900;
+                   color:rgba(255,255,255,.04);right:-1rem;bottom:-1.5rem;
+                   pointer-events:none;line-height:1;}
+.chip{display:inline-flex;align-items:center;gap:.3rem;background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:.24rem .8rem;
+      color:#a8e063;font-size:.72rem;font-weight:600;margin-bottom:.5rem;}
+.hero-strip h1{font-family:'Nunito',sans-serif;font-weight:900;color:#fff;
+               font-size:clamp(1.35rem,5vw,1.85rem);line-height:1.2;}
+.hero-strip h1 em{color:var(--gold);font-style:normal;}
+.hero-strip p{color:rgba(255,255,255,.72);font-size:.8rem;margin-top:.3rem;}
+
+/* FIELDS */
+.field{margin-bottom:.9rem;}
+.lbl{display:block;font-weight:600;font-size:.82rem;color:#334155;margin-bottom:.28rem;}
+.req{color:var(--red);}
+.fi{width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:.62rem .9rem;
+    font-family:'Poppins',sans-serif;font-size:.87rem;color:#1e293b;background:#f8fafc;
+    outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;}
+.fi:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,168,35,.13);background:#fff;}
+.fi.err{border-color:var(--red)!important;}
+.et{font-size:.72rem;color:var(--red);margin-top:.22rem;display:none;}
+select.fi{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%231b3a5c' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+          background-repeat:no-repeat;background-position:right .85rem center;padding-right:2.2rem;cursor:pointer;}
+
+/* BUTTONS */
+.btn{width:100%;border:none;border-radius:12px;padding:.88rem;
+     font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;
+     cursor:pointer;display:flex;align-items:center;justify-content:center;
+     gap:.5rem;transition:transform .15s,box-shadow .15s;}
+.btn:hover{transform:translateY(-1px);}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none!important;}
+.btn-green{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;
+           box-shadow:0 4px 16px rgba(82,168,35,.35);}
+.btn-navy{background:linear-gradient(135deg,var(--navy),#254e7a);color:#fff;
+          box-shadow:0 4px 16px rgba(27,58,92,.25);}
+.btn-wa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;
+        box-shadow:0 4px 16px rgba(37,211,102,.35);}
+.btn-outline{background:#fff;border:2px solid #e2e8f0;color:var(--navy);box-shadow:none;}
+.btn-outline:hover{border-color:var(--navy);}
+.btn-red{background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;
+         box-shadow:0 4px 14px rgba(239,68,68,.3);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#e8921a);color:#fff;
+          box-shadow:0 4px 14px rgba(245,166,35,.35);}
+.spin{width:16px;height:16px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;
+      border-radius:50%;animation:sp .7s linear infinite;display:none;}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* AUTH TABS */
+.auth-tabs{display:flex;gap:0;background:#f1f5f9;border-radius:12px;padding:4px;margin-bottom:1.1rem;}
+.auth-tab{flex:1;text-align:center;padding:.48rem;border-radius:9px;cursor:pointer;
+          font-family:'Nunito',sans-serif;font-weight:800;font-size:.82rem;color:#64748b;
+          transition:all .2s;}
+.auth-tab.active{background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(27,58,92,.1);}
+
+/* DIVIDER with text */
+.or-divider{display:flex;align-items:center;gap:.75rem;margin:.6rem 0;}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#e2e8f0;}
+.or-divider span{font-size:.72rem;color:#94a3b8;font-weight:600;white-space:nowrap;}
+
+/* ════════════════ LOADING ════════════════ */
+#screenLoading{text-align:center;padding:4rem 1rem;}
+.loader{width:52px;height:52px;border:5px solid #e2e8f0;border-top-color:var(--green);
+        border-radius:50%;animation:sp .85s linear infinite;margin:0 auto 1rem;}
+.loader-text{font-family:'Nunito',sans-serif;font-weight:900;color:var(--navy);font-size:1rem;}
+.loader-sub{font-size:.78rem;color:#94a3b8;margin-top:.25rem;}
+
+/* ════════════════ INFO ROW ════════════════ */
+.info-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.55rem;margin-bottom:1rem;}
+.info-box{background:linear-gradient(135deg,var(--navy),#254e7a);border-radius:14px;
+          padding:.8rem .6rem;text-align:center;}
+.ib-num{font-family:'Nunito',sans-serif;font-weight:900;color:var(--gold);
+        font-size:1.7rem;line-height:1;}
+.ib-lbl{font-size:.62rem;color:rgba(255,255,255,.65);margin-top:.12rem;font-weight:600;
+        text-transform:uppercase;letter-spacing:.03em;}
+
+/* ════════════════ SCORING LEGEND ════════════════ */
+.score-legend{background:#fff;border-radius:14px;padding:.9rem 1rem;
+              box-shadow:0 2px 12px rgba(27,58,92,.07);margin-bottom:1rem;}
+.sl-title{font-family:'Nunito',sans-serif;font-weight:900;color:var(--navy);
+          font-size:.85rem;margin-bottom:.55rem;}
+.sl-row{display:flex;gap:.4rem;flex-wrap:wrap;}
+.sl-badge{display:inline-flex;align-items:center;gap:.3rem;border-radius:99px;
+          padding:.25rem .65rem;font-size:.72rem;font-weight:700;}
+.sl-badge.fast{background:rgba(82,168,35,.12);color:var(--green2);}
+.sl-badge.medium{background:rgba(59,130,246,.1);color:#1d4ed8;}
+.sl-badge.slow{background:rgba(249,115,22,.1);color:#c2410c;}
+.sl-badge.wrong{background:rgba(239,68,68,.1);color:var(--red2);}
+.sl-badge.skip{background:#f1f5f9;color:#64748b;}
+
+/* ════════════════ QUIZ SCREEN ════════════════ */
+.quiz-topbar{display:flex;align-items:center;justify-content:space-between;
+             margin-bottom:.55rem;flex-wrap:wrap;gap:.3rem;}
+.quiz-prog-lbl{font-size:.78rem;color:#64748b;font-weight:600;}
+.quiz-att{font-family:'Nunito',sans-serif;font-weight:900;color:var(--green);font-size:.82rem;}
+.prog-bar{background:#e2e8f0;border-radius:99px;height:7px;margin-bottom:.85rem;}
+.prog-fill{height:7px;border-radius:99px;
+           background:linear-gradient(90deg,var(--green),#7dd44a);transition:width .4s ease;}
+
+/* Timer ring */
+.timer-wrap{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem;}
+.timer-ring{position:relative;width:44px;height:44px;flex-shrink:0;}
+.timer-ring svg{transform:rotate(-90deg);}
+.timer-ring circle{fill:none;stroke-width:4;}
+.timer-bg{stroke:#e2e8f0;}
+.timer-fg{stroke:var(--green);stroke-dasharray:113;stroke-dashoffset:0;
+          stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .3s;}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+           font-family:'Nunito',sans-serif;font-weight:900;font-size:.78rem;color:var(--navy);}
+.timer-pts{flex:1;}
+.timer-pts-label{font-size:.7rem;color:#94a3b8;font-weight:600;}
+.timer-pts-val{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;
+               color:var(--green);line-height:1.2;}
+.timer-pts-val.medium{color:var(--blue);}
+.timer-pts-val.slow{color:var(--orange);}
+
+.q-card{background:#fff;border-radius:18px;
+        box-shadow:0 4px 24px rgba(27,58,92,.09);overflow:hidden;margin-bottom:.75rem;}
+.q-header{background:linear-gradient(135deg,var(--navy),#254e7a);
+          padding:.8rem 1rem;display:flex;align-items:center;gap:.6rem;}
+.q-badge{background:var(--gold);color:var(--navy);font-family:'Nunito',sans-serif;
+         font-weight:900;font-size:.72rem;padding:.2rem .6rem;border-radius:99px;}
+.q-student{color:rgba(255,255,255,.75);font-size:.75rem;font-family:'Nunito',sans-serif;
+           font-weight:700;flex:1;padding-left:.2rem;overflow:hidden;
+           text-overflow:ellipsis;white-space:nowrap;}
+.q-marks-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);
+               font-size:.65rem;font-weight:600;padding:.16rem .5rem;
+               border-radius:99px;white-space:nowrap;}
+.q-body{padding:1rem 1.05rem .9rem;}
+.q-text{font-weight:600;font-size:.9rem;color:#1e293b;line-height:1.6;margin-bottom:.85rem;}
+
+.options{display:flex;flex-direction:column;gap:.45rem;}
+.opt{display:flex;align-items:center;gap:.7rem;border:2px solid #e2e8f0;
+     border-radius:11px;padding:.62rem .85rem;cursor:pointer;transition:all .15s;
+     background:#f8fafc;user-select:none;}
+.opt:hover:not(.selected){border-color:var(--navy);background:#f0f4ff;}
+.opt.selected{border-color:var(--blue);background:#eff6ff;}
+.opt.selected .opt-mark{background:var(--blue);border-color:var(--blue);color:#fff;}
+.opt-mark{width:27px;height:27px;border-radius:50%;border:2px solid #e2e8f0;flex-shrink:0;
+          display:flex;align-items:center;justify-content:center;
+          font-family:'Nunito',sans-serif;font-weight:900;font-size:.72rem;
+          color:#94a3b8;transition:all .15s;}
+.opt-text{font-size:.84rem;color:#334155;line-height:1.4;flex:1;}
+
+/* Confirm banner */
+.confirm-banner{background:#fffbeb;border:1.5px solid #fde68a;border-radius:11px;
+                padding:.65rem .85rem;font-size:.77rem;color:#78350f;
+                display:none;margin-bottom:.65rem;line-height:1.55;}
+
+/* Pre/post question cards */
+.special-q-card{background:#fff;border-radius:18px;
+                box-shadow:0 4px 24px rgba(27,58,92,.09);
+                overflow:hidden;margin-bottom:.85rem;}
+.special-q-hdr{padding:.85rem 1.1rem;display:flex;align-items:center;gap:.65rem;}
+.special-q-hdr.pre{background:linear-gradient(135deg,#1a5e38,#254e7a);}
+.special-q-hdr.post{background:linear-gradient(135deg,var(--gold),#e8921a);}
+.special-q-hdr span{font-family:'Nunito',sans-serif;font-weight:900;color:#fff;font-size:.9rem;}
+.special-q-body{padding:1rem 1.1rem 1.2rem;}
+.yn-row{display:flex;gap:.65rem;margin-top:.7rem;}
+.yn-btn{flex:1;border:2px solid #e2e8f0;border-radius:11px;padding:.7rem;
+        font-family:'Nunito',sans-serif;font-weight:900;font-size:.88rem;
+        cursor:pointer;text-align:center;background:#f8fafc;transition:all .15s;}
+.yn-btn:hover{border-color:var(--green);}
+.yn-btn.yes.sel{border-color:var(--green);background:rgba(82,168,35,.1);color:var(--green2);}
+.yn-btn.no.sel{border-color:var(--red);background:rgba(239,68,68,.08);color:var(--red2);}
+
+/* ════════════════ STICKY NAV BAR ════════════════ */
+.sticky-quiz-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:250;
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-top:1.5px solid #e8edf3;
+  box-shadow:0 -4px 20px rgba(27,58,92,.1);
+  padding:.65rem 1rem;display:none;
+}
+.sticky-nav-inner{max-width:640px;margin:0 auto;display:flex;gap:.55rem;}
+.sticky-nav-inner .btn{flex:1;padding:.72rem .5rem;font-size:.85rem;}
+
+/* ════════════════ REVIEW ════════════════ */
+.review-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem;}
+@media(max-width:420px){.review-summary{grid-template-columns:repeat(2,1fr);}}
+.rs-card{background:#fff;border-radius:14px;padding:.8rem .5rem;
+         text-align:center;box-shadow:0 2px 10px rgba(27,58,92,.07);}
+.rs-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.5rem;line-height:1;}
+.rs-num.c{color:var(--green);}  .rs-num.w{color:var(--red);}
+.rs-num.s{color:var(--navy);}   .rs-num.neg{color:var(--orange);}
+.rs-lbl{font-size:.6rem;color:#94a3b8;font-weight:600;text-transform:uppercase;
+        letter-spacing:.03em;margin-top:.1rem;}
+
+.rev-item{background:#fff;border-radius:14px;
+          box-shadow:0 2px 10px rgba(27,58,92,.07);overflow:hidden;margin-bottom:.55rem;}
+.rev-hdr{padding:.6rem .85rem;display:flex;align-items:flex-start;gap:.55rem;}
+.rev-hdr.c{background:rgba(82,168,35,.07);border-left:4px solid var(--green);}
+.rev-hdr.w{background:rgba(239,68,68,.06);border-left:4px solid var(--red);}
+.rev-hdr.sk{background:#f8fafc;border-left:4px solid #e2e8f0;}
+.rev-status{font-size:1rem;flex-shrink:0;margin-top:.05rem;}
+.rev-q-text{font-weight:600;font-size:.8rem;color:#1e293b;flex:1;line-height:1.45;}
+.rev-pts-badge{font-family:'Nunito',sans-serif;font-weight:900;font-size:.76rem;
+               border-radius:99px;padding:.12rem .48rem;margin-left:auto;
+               flex-shrink:0;white-space:nowrap;}
+.rev-pts-badge.c{background:rgba(82,168,35,.12);color:var(--green2);}
+.rev-pts-badge.w{background:rgba(239,68,68,.1);color:var(--red2);}
+.rev-pts-badge.sk{background:#f1f5f9;color:#64748b;}
+.rev-time-badge{font-size:.65rem;color:#94a3b8;white-space:nowrap;margin-left:.3rem;flex-shrink:0;margin-top:.05rem;}
+.rev-opts{padding:.45rem .85rem .7rem;display:flex;flex-direction:column;gap:.25rem;}
+.rev-opt{display:flex;align-items:flex-start;gap:.45rem;padding:.3rem .42rem;
+         border-radius:7px;font-size:.78rem;}
+.rev-opt.oc{background:rgba(82,168,35,.1);color:var(--green2);}
+.rev-opt.owx{background:rgba(239,68,68,.09);color:var(--red2);}
+.rev-opt.on{color:#64748b;}
+.rev-opt-ltr{width:21px;height:21px;border-radius:50%;flex-shrink:0;display:flex;
+             align-items:center;justify-content:center;font-family:'Nunito',sans-serif;
+             font-weight:900;font-size:.62rem;background:#e2e8f0;color:#64748b;}
+.rev-opt.oc .rev-opt-ltr{background:var(--green);color:#fff;}
+.rev-opt.owx .rev-opt-ltr{background:var(--red);color:#fff;}
+
+/* ════════════════ SCORE SCREEN ════════════════ */
+.score-hero{background:linear-gradient(135deg,var(--navy),#254e7a);border-radius:18px;
+            padding:1.65rem 1.2rem;text-align:center;margin-bottom:1rem;
+            box-shadow:0 4px 24px rgba(27,58,92,.15);}
+.score-emoji{font-size:2.7rem;margin-bottom:.35rem;}
+.score-val{font-family:'Nunito',sans-serif;font-weight:900;color:var(--gold);
+           font-size:3.2rem;line-height:1;}
+.score-out{color:rgba(255,255,255,.55);font-size:.8rem;margin-top:.18rem;}
+.score-name{font-family:'Nunito',sans-serif;font-weight:900;color:#fff;
+            font-size:1.05rem;margin-top:.55rem;}
+.score-tag{display:inline-block;background:rgba(255,255,255,.12);border-radius:99px;
+           padding:.28rem .85rem;font-size:.72rem;color:rgba(255,255,255,.78);margin-top:.35rem;}
+.score-breakdown{display:flex;gap:.5rem;justify-content:center;margin-top:.7rem;flex-wrap:wrap;}
+.sbd{background:rgba(255,255,255,.1);border-radius:8px;padding:.3rem .65rem;
+     font-size:.68rem;color:rgba(255,255,255,.8);font-weight:600;}
+
+/* LEADERBOARD */
+.lb-item{background:#fff;border-radius:14px;padding:.72rem .85rem;
+         box-shadow:0 2px 10px rgba(27,58,92,.07);display:flex;align-items:center;
+         gap:.7rem;margin-bottom:.42rem;animation:fadeUp .3s ease both;}
+.lb-rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+         justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;
+         font-size:.82rem;flex-shrink:0;}
+.lb-rank.r1{background:linear-gradient(135deg,#f5a623,#e8921a);color:#fff;}
+.lb-rank.r2{background:linear-gradient(135deg,#94a3b8,#64748b);color:#fff;}
+.lb-rank.r3{background:linear-gradient(135deg,#cd7f32,#a0522d);color:#fff;}
+.lb-rank.rn{background:#f1f5f9;color:#64748b;}
+.lb-info{flex:1;}
+.lb-name{font-weight:600;font-size:.85rem;color:var(--navy);}
+.lb-college{font-size:.68rem;color:#94a3b8;}
+.lb-you{font-size:.55rem;background:var(--green);color:#fff;border-radius:99px;
+        padding:.07rem .38rem;margin-left:.25rem;vertical-align:middle;}
+.lb-score{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;color:var(--green);}
+.lb-score-sub{font-size:.6rem;color:#94a3b8;text-align:right;}
+
+/* TOAST */
+.toast{position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);
+       background:#1e293b;color:#fff;padding:.52rem 1.15rem;border-radius:99px;
+       font-size:.77rem;font-weight:600;z-index:600;opacity:0;
+       transition:opacity .2s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+
+/* MISC */
+.sec-title{font-family:'Nunito',sans-serif;font-weight:900;color:var(--navy);
+           font-size:.93rem;margin-bottom:.65rem;}
+.empty-state{text-align:center;padding:2rem 1rem;color:#94a3b8;font-size:.82rem;}
+.empty-state .ei{font-size:2rem;margin-bottom:.35rem;}
+.link-text{color:var(--green2);font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <img src="cbdlogo.png" alt="College Buddy" class="nav-logo"
+         onerror="this.outerHTML='<span style=\'font-family:Nunito,sans-serif;font-weight:900;font-size:1rem;color:#1b3a5c\'>College<span style=\'color:#52a823\'>Buddy</span></span>'"/>
+    <div class="nav-title" id="navTitle">Quiz</div>
+    <div class="nav-badge" id="navBadge">📝</div>
+  </div>
+</nav>
+
+<!-- ══════════ LOADING ══════════ -->
+<div class="screen active" id="screenLoading">
+  <div class="loader"></div>
+  <div class="loader-text" id="loadText">Loading Quiz...</div>
+  <div class="loader-sub"  id="loadSub">CSV file pad rahi hai</div>
+</div>
+
+<!-- ══════════ ERROR ══════════ -->
+<div class="screen" id="screenError">
+  <div style="text-align:center;padding:3rem 1rem;">
+    <div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;color:var(--navy);font-size:1.15rem;margin-bottom:.5rem;">Quiz Load Nahi Hua</div>
+    <p style="font-size:.82rem;color:#64748b;line-height:1.65;" id="errMsg">—</p>
+  </div>
+</div>
+
+<!-- ══════════ AUTH SCREEN ══════════ -->
+<div class="screen" id="screenAuth">
+  <div class="hero-strip">
+    <div class="chip" id="authChip">📝 Quiz</div>
+    <h1 id="authH1">Join the <em>Quiz</em></h1>
+    <p>Login ya register karo — bilkul free!</p>
+  </div>
+
+  <div class="info-row">
+    <div class="info-box"><div class="ib-num" id="infoQ">—</div><div class="ib-lbl">Questions</div></div>
+    <div class="info-box"><div class="ib-num" id="infoM">—</div><div class="ib-lbl">Max Marks</div></div>
+    <div class="info-box"><div class="ib-num" id="infoN">-3</div><div class="ib-lbl">Negative</div></div>
+  </div>
+
+  <!-- Scoring legend -->
+  <div class="score-legend">
+    <div class="sl-title">🎯 Scoring System</div>
+    <div class="sl-row">
+      <span class="sl-badge fast">⚡ &lt;5s → +15 pts</span>
+      <span class="sl-badge medium">🎯 5–15s → +10 pts</span>
+      <span class="sl-badge slow">🐢 &gt;15s → +7 pts</span>
+      <span class="sl-badge wrong">❌ Wrong → -3 pts</span>
+      <span class="sl-badge skip">○ Skip → 0 pts</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tabLogin"   onclick="switchTab('login')">🔑 Login</div>
+        <div class="auth-tab"        id="tabRegister" onclick="switchTab('register')">📝 Register</div>
+      </div>
+
+      <!-- ── LOGIN FORM ── -->
+      <div id="loginForm">
+        <div class="field">
+          <label class="lbl">Mobile Number <span class="req">*</span></label>
+          <input type="tel" id="lMob" class="fi" placeholder="10-digit number" maxlength="10" inputmode="numeric"/>
+          <p class="et" id="eLMob">Valid 10-digit number chahiye.</p>
+        </div>
+        <div class="field" style="margin-bottom:1.1rem;">
+          <label class="lbl">Password <span class="req">*</span></label>
+          <input type="password" id="lPass" class="fi" placeholder="Apna password"/>
+          <p class="et" id="eLPass">Password required hai.</p>
+        </div>
+        <button class="btn btn-green" id="loginBtn" onclick="handleLogin()">
+          <div class="spin" id="loginSpin"></div>
+          <span id="loginTxt">Login &amp; Start Quiz 🚀</span>
+        </button>
+        <p style="text-align:center;font-size:.75rem;color:#64748b;margin-top:.75rem;">
+          Account nahi hai? <span class="link-text" onclick="switchTab('register')">Register karein →</span>
+        </p>
+      </div>
+
+      <!-- ── REGISTER FORM ── -->
+      <div id="registerForm" style="display:none;">
+        <div class="field">
+          <label class="lbl">Full Name <span class="req">*</span></label>
+          <input type="text" id="rName" class="fi" placeholder="Apna pura naam" autocomplete="name"/>
+          <p class="et" id="eRName">Naam required hai.</p>
+        </div>
+        <div class="field">
+          <label class="lbl">College <span class="req">*</span></label>
+          <select id="rCollege" class="fi">
+            <option value="">-- College Select Karein --</option>
+          </select>
+          <p class="et" id="eRCollege">College select karein.</p>
+        </div>
+        <div class="field">
+          <label class="lbl">Semester <span class="req">*</span></label>
+          <select id="rSem" class="fi">
+            <option value="">-- Semester --</option>
+            <option>1st Semester</option>
+            <option>2nd Semester</option>
+            <option>3rd Semester</option>
+            <option>4th Semester</option>
+            <option>5th Semester</option>
+            <option>6th Semester</option>
+            <option>Other</option>
+          </select>
+          <p class="et" id="eRSem">Semester select karein.</p>
+        </div>
+        <div class="field">
+          <label class="lbl">Email <span class="req">*</span></label>
+          <input type="email" id="rEmail" class="fi" placeholder="example@gmail.com" inputmode="email"/>
+          <p class="et" id="eREmail">Valid email chahiye.</p>
+        </div>
+        <div class="field">
+          <label class="lbl">Mobile Number <span class="req">*</span></label>
+          <input type="tel" id="rMob" class="fi" placeholder="10-digit number" maxlength="10" inputmode="numeric"/>
+          <p class="et" id="eRMob">Valid 10-digit number chahiye.</p>
+        </div>
+        <div class="field" style="margin-bottom:1.1rem;">
+          <label class="lbl">Create Password <span class="req">*</span></label>
+          <input type="password" id="rPass" class="fi" placeholder="Min 6 characters"/>
+          <p class="et" id="eRPass">Min 6 character password chahiye.</p>
+        </div>
+        <button class="btn btn-green" id="registerBtn" onclick="handleRegister()">
+          <div class="spin" id="registerSpin"></div>
+          <span id="registerTxt">Register &amp; Start Quiz 🚀</span>
+        </button>
+        <p style="text-align:center;font-size:.75rem;color:#64748b;margin-top:.75rem;">
+          Already registered? <span class="link-text" onclick="switchTab('login')">Login karein →</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PRE-QUIZ QUESTION ══════════ -->
+<div class="screen" id="screenPreQ">
+  <div class="special-q-card">
+    <div class="special-q-hdr pre">
+      <span>🎓</span>
+      <span>Quiz shuru karne se pehle...</span>
+    </div>
+    <div class="special-q-body">
+      <p style="font-weight:600;font-size:.92rem;color:#1e293b;margin-bottom:.4rem;">
+        Aapne <strong id="preQName" style="color:var(--navy);">—</strong>,
+        kya aapne is topic ki class attend ki thi?
+      </p>
+      <p style="font-size:.78rem;color:#64748b;margin-bottom:.2rem;">Aap ne class kiya tha?</p>
+      <div class="yn-row">
+        <div class="yn-btn yes" id="preYes" onclick="setPreQ('yes')">✅ Haan, Kiya Tha</div>
+        <div class="yn-btn no"  id="preNo"  onclick="setPreQ('no')">❌ Nahi Kiya</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-green" id="preNextBtn" onclick="startActualQuiz()" disabled>
+    Quiz Shuru Karo →
+  </button>
+</div>
+
+<!-- ══════════ QUIZ SCREEN ══════════ -->
+<div class="screen" id="screenQuiz">
+  <div class="quiz-topbar">
+    <span class="quiz-prog-lbl">Q <span id="qCur">1</span> / <span id="qTot">—</span></span>
+    <span class="quiz-att" id="qAtt">0 attempted</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+
+  <!-- Timer + live points preview -->
+  <div class="timer-wrap">
+    <div class="timer-ring">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle class="timer-bg" cx="22" cy="22" r="18"/>
+        <circle class="timer-fg" id="timerCircle" cx="22" cy="22" r="18"/>
+      </svg>
+      <div class="timer-num" id="timerNum">—</div>
+    </div>
+    <div class="timer-pts">
+      <div class="timer-pts-label">If correct now:</div>
+      <div class="timer-pts-val" id="timerPts">+10 pts</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:'Nunito',sans-serif;font-weight:900;color:var(--navy);font-size:.85rem;" id="liveTotalScore">0 pts</div>
+      <div style="font-size:.65rem;color:#94a3b8;">current score</div>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-header">
+      <span class="q-badge" id="qBadge">Q1</span>
+      <span class="q-student" id="qStudName">—</span>
+      <span class="q-marks-badge" id="qMarksBadge">max +15</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text" id="qText">—</div>
+      <div class="options" id="optsCont"></div>
+    </div>
+  </div>
+
+  <div class="confirm-banner" id="confirmBanner">
+    ⚠️ <strong>Aapne <span id="unattempted">0</span> questions skip kiye.</strong>
+    Skip = 0 marks. Submit confirm karo?
+  </div>
+</div>
+
+<!-- Sticky quiz nav -->
+<div class="sticky-quiz-nav" id="stickyQuizNav">
+  <div class="sticky-nav-inner">
+    <button class="btn btn-outline" id="btnPrev" onclick="navQ(-1)">← Prev</button>
+    <button class="btn btn-green"   id="btnNext" onclick="navQ(1)">Next →</button>
+    <button class="btn btn-red"     id="btnSub"  onclick="onSubmitClick()" style="display:none;">Submit ✓</button>
+  </div>
+</div>
+
+<!-- ══════════ POST-QUIZ FEEDBACK ══════════ -->
+<div class="screen" id="screenPostQ">
+  <div class="special-q-card">
+    <div class="special-q-hdr post">
+      <span>💬</span>
+      <span>Quiz khatam! Ek feedback do</span>
+    </div>
+    <div class="special-q-body">
+      <p style="font-weight:600;font-size:.9rem;color:#1e293b;margin-bottom:.7rem;">
+        Is class ya quiz ke baare mein aapka feedback / suggestion?
+      </p>
+      <textarea id="feedbackText" class="fi" rows="4" style="resize:none;"
+                placeholder="Kuch bhi likho — topic, difficulty, suggestions... 📝"></textarea>
+    </div>
+  </div>
+  <button class="btn btn-gold" onclick="submitWithFeedback()">
+    <div class="spin" id="postSpin"></div>
+    <span id="postTxt">Submit &amp; See Results 🎯</span>
+  </button>
+  <p style="text-align:center;font-size:.7rem;color:#94a3b8;margin-top:.5rem;">Feedback optional hai</p>
+</div>
+
+<!-- ══════════ REVIEW SCREEN ══════════ -->
+<div class="screen" id="screenReview">
+  <div class="hero-strip">
+    <div class="chip">📊 Result</div>
+    <h1>Quiz <em>Review</em></h1>
+    <p id="revNameLine">—</p>
+  </div>
+  <div class="review-summary">
+    <div class="rs-card"><div class="rs-num c" id="rsC">—</div><div class="rs-lbl">Correct</div></div>
+    <div class="rs-card"><div class="rs-num w" id="rsW">—</div><div class="rs-lbl">Wrong</div></div>
+    <div class="rs-card"><div class="rs-num neg" id="rsNeg">—</div><div class="rs-lbl">Negative</div></div>
+    <div class="rs-card"><div class="rs-num s" id="rsS">—</div><div class="rs-lbl">Score</div></div>
+  </div>
+  <div id="revList"></div>
+  <!-- Sticky bottom for review page -->
+  <div style="position:sticky;bottom:0;background:var(--bg);padding:.75rem 0 .25rem;">
+    <button class="btn btn-navy" onclick="showScreen('screenScore')">View Score &amp; Leaderboard 🏆</button>
+  </div>
+</div>
+
+<!-- ══════════ SCORE + LEADERBOARD ══════════ -->
+<div class="screen" id="screenScore">
+  <div class="score-hero">
+    <div class="score-emoji" id="sEmoji">🎉</div>
+    <div class="score-val"   id="sVal">—</div>
+    <div class="score-out"   id="sOut">—</div>
+    <div class="score-name"  id="sName">—</div>
+    <div class="score-tag"   id="sTag">—</div>
+    <div class="score-breakdown" id="sBreakdown"></div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;">
+    <div class="sec-title" style="margin-bottom:0;">🏅 Leaderboard</div>
+    <button onclick="loadLeaderboard()" style="background:none;border:1.5px solid #e2e8f0;
+            border-radius:7px;padding:.25rem .6rem;font-size:.7rem;font-weight:700;
+            color:var(--navy);cursor:pointer;font-family:'Nunito',sans-serif;">⟳ Refresh</button>
+  </div>
+  <div id="lbCont"><div class="empty-state"><div class="ei">⏳</div>Loading...</div></div>
+
+  <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.6rem;padding-bottom:1rem;">
+    <button class="btn btn-wa" onclick="shareWA()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.121 1.522 5.857L.058 23.5l5.818-1.525A11.939 11.939 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.804 9.804 0 0 1-5.012-1.369l-.358-.213-3.724.976.994-3.63-.234-.373A9.79 9.79 0 0 1 2.182 12C2.182 6.578 6.578 2.182 12 2.182c5.421 0 9.818 4.396 9.818 9.818 0 5.421-4.397 9.818-9.818 9.818z"/></svg>
+      Doston ko Challenge Karo! 📲
+    </button>
+    <button class="btn btn-outline" onclick="showScreen('screenReview')" style="font-size:.84rem;">← Review Dekhein</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════ -->
+<script>
+// ════════ CONFIG — paste your deployed Google Script URL here ════════
+const SHEET_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID_HERE/exec';
+
+const COLLEGES = [
+  "A.B.S. College, Lalganj","B.M.D. College, Dayalpur","CN College, Sahebganj",
+  "Dr. R.M.L.S. College, Muzaffarpur","Indu Devi Ranjeet Kumar Prakash",
+  "J.L. College, Hajipur","J.L.N.M. College, Ghorasahan",
+  "L.N.T. College, Muzaffarpur","L.N. College, Bhagwanpur",
+  "L.N.D. College, Motihari","L.S. College, Muzaffarpur",
+  "M.S.M. Samata College, Jandah","M.S.S.G. College, Areraj",
+  "M.D.D.M. College, Muzaffarpur","M.J.K. College, Bettiah",
+  "M.P.S. Sc. College, Muzaffarpur","M.S. College, Motihari",
+  "Nitishwar College, Muzaffarpur","R.D.S. College, Muzaffarpur",
+  "R.L.S.Y. College, Bettiah","R.N. College, Hajipur",
+  "R.S.S.M. College, Sitamarhi","R.S.S. Sc. College, Sitamarhi",
+  "Rameshwar Mahavidyalaya, Muzaffarpur","S.R.A.P. College, Barachakia",
+  "S.L.K. College, Sitamarhi","S.N.S. College, Motihari",
+  "S.R.K.G. College, Sitamarhi","T. P. Verma College, Narkatiyaganj",
+  "Umesh Kumar Ranjeet Vidayalya",
+  "Vaishali Institute of Business and Rural Management, Muzaffarpur","Other"
+];
+
+// ════════ SCORING CONFIG ════════
+const PTS_FAST   =  15;   // answered in < FAST_SEC seconds
+const PTS_MEDIUM =  10;   // answered in FAST_SEC–MEDIUM_SEC
+const PTS_SLOW   =   7;   // answered after MEDIUM_SEC
+const PTS_WRONG  =  -3;   // negative marking
+const FAST_SEC   =   5;
+const MEDIUM_SEC =  15;
+
+// ════════ STATE ════════
+let quizName     = '';
+let questions    = [];
+let answers      = {};   // { idx: { opt:1-4, timeTaken:seconds, pts:number } }
+let currentQ     = 0;
+let studentName  = '';
+let studentMob   = '';
+let studentData  = {};   // full user profile from session
+let finalScore   = 0;
+let finalCorrect = 0;
+let finalNeg     = 0;
+let submitPending = false;
+let preQAnswer   = null;  // 'yes'/'no'
+let feedbackText = '';
+let qStartTime   = null;  // timestamp when current question was displayed
+let timerInterval = null;
+let currentQTime  = 0;    // seconds elapsed on current question
+const LS_KEY = 'cb_quiz_user';
+
+// ════════ BOOT ════════
+window.addEventListener('DOMContentLoaded', async () => {
+  // Populate college dropdown
+  const sel = document.getElementById('rCollege');
+  COLLEGES.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+
+  const params = new URLSearchParams(window.location.search);
+  quizName = (params.get('q') || '').toLowerCase().trim();
+
+  if (!quizName) {
+    showError('URL mein <code>?q=filename</code> parameter chahiye.<br>Example: <code>index.html?q=dsa</code>');
+    return;
+  }
+
+  document.getElementById('navTitle').textContent = quizName.toUpperCase() + ' Quiz';
+  document.getElementById('navBadge').textContent = '📝 ' + quizName.toUpperCase();
+
+  try {
+    setLoad('Loading ' + quizName.toUpperCase() + ' Quiz...', 'data/' + quizName + '.csv pad rahi hai');
+    const csv = await fetchCSV('data/' + quizName + '.csv');
+    questions  = parseCSV(csv);
+    if (questions.length === 0) throw new Error('CSV mein koi valid question nahi mila.');
+
+    // Check for saved session
+    const saved = getSavedSession();
+    if (saved) {
+      studentName = saved.name;
+      studentMob  = saved.mobile;
+      studentData = saved;
+      // Check if already submitted this quiz
+      checkIfAlreadyDone(saved.mobile);
+    } else {
+      showAuthScreen();
+    }
+  } catch (err) {
+    showError('File load error: <strong>' + esc(err.message) + '</strong><br><br>' +
+              'Check: <code>data/' + esc(quizName) + '.csv</code> server par exist karti ho.');
+  }
+});
+
+// ════════ SESSION ════════
+function getSavedSession() {
+  try {
+    const s = localStorage.getItem(LS_KEY);
+    if (!s) return null;
+    return JSON.parse(s);
+  } catch(_) { return null; }
+}
+function saveSession(data) {
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
+function clearSession() {
+  localStorage.removeItem(LS_KEY);
+}
+
+async function checkIfAlreadyDone(mobile) {
+  setLoad('Session mili! Check ho raha hai...', 'Ek second...');
+  try {
+    const res  = await fetch(SHEET_URL + '?action=checkSubmission&quiz=' + enc(quizName) + '&mobile=' + enc(mobile));
+    const data = await res.json();
+    if (data.alreadySubmitted) {
+      finalScore   = data.score   || 0;
+      finalCorrect = data.correct || 0;
+      finalNeg     = data.negative || 0;
+      fillScoreScreen();
+      showScreen('screenScore');
+      loadLeaderboard();
+      showToast('Welcome back, ' + studentName + '! Aapka score dekho 👇');
+    } else {
+      showAuthScreen();
+    }
+  } catch(_) {
+    showAuthScreen();
+  }
+}
+
+// ════════ AUTH SCREEN ════════
+function showAuthScreen() {
+  document.getElementById('authChip').textContent = '📝 ' + quizName.toUpperCase() + ' Quiz';
+  document.getElementById('authH1').innerHTML     = 'Join the <em>' + esc(quizName.toUpperCase()) + '</em> Quiz';
+  document.getElementById('infoQ').textContent    = questions.length;
+  // Max possible score = all fast answers
+  document.getElementById('infoM').textContent   = questions.length * PTS_FAST;
+  showScreen('screenAuth');
+}
+
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('loginForm').style.display    = isLogin ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = isLogin ? 'none'  : 'block';
+}
+
+// ════════ LOGIN ════════
+async function handleLogin() {
+  const mob  = document.getElementById('lMob').value.trim();
+  const pass = document.getElementById('lPass').value.trim();
+  let ok = true;
+  const se = (id,v) => document.getElementById(id).style.display = v ? 'block' : 'none';
+  const fe = (id,v) => document.getElementById(id).classList.toggle('err',v);
+
+  if (!/^\d{10}$/.test(mob)) { fe('lMob',true);  se('eLMob',true);  ok=false; } else { fe('lMob',false);  se('eLMob',false); }
+  if (!pass)                  { fe('lPass',true); se('eLPass',true); ok=false; } else { fe('lPass',false); se('eLPass',false); }
+  if (!ok) return;
+
+  setBtnLoad('loginBtn','loginSpin','loginTxt',true);
+  try {
+    const res  = await fetch(SHEET_URL + '?action=loginUser&mobile=' + enc(mob) + '&password=' + enc(pass));
+    const data = await res.json();
+    if (data.status === 'ok') {
+      studentName = data.user.name;
+      studentMob  = mob;
+      studentData = data.user;
+      saveSession({ ...data.user, mobile: mob });
+      await afterAuthSuccess();
+    } else {
+      showToast(data.message || 'Wrong mobile or password');
+    }
+  } catch(_) {
+    showToast('Network error. Try again.');
+  }
+  setBtnLoad('loginBtn','loginSpin','loginTxt',false);
+}
+
+// ════════ REGISTER ════════
+async function handleRegister() {
+  const name    = document.getElementById('rName').value.trim();
+  const college = document.getElementById('rCollege').value;
+  const sem     = document.getElementById('rSem').value;
+  const email   = document.getElementById('rEmail').value.trim();
+  const mob     = document.getElementById('rMob').value.trim();
+  const pass    = document.getElementById('rPass').value.trim();
+  let ok = true;
+  const se=(id,v)=>document.getElementById(id).style.display=v?'block':'none';
+  const fe=(id,v)=>document.getElementById(id).classList.toggle('err',v);
+
+  if (!name)                                   { fe('rName',true);    se('eRName',true);    ok=false; } else { fe('rName',false);    se('eRName',false); }
+  if (!college)                                { fe('rCollege',true); se('eRCollege',true); ok=false; } else { fe('rCollege',false); se('eRCollege',false); }
+  if (!sem)                                    { fe('rSem',true);     se('eRSem',true);     ok=false; } else { fe('rSem',false);     se('eRSem',false); }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ fe('rEmail',true);  se('eREmail',true);  ok=false; } else { fe('rEmail',false);  se('eREmail',false); }
+  if (!/^\d{10}$/.test(mob))                   { fe('rMob',true);     se('eRMob',true);     ok=false; } else { fe('rMob',false);     se('eRMob',false); }
+  if (pass.length < 6)                         { fe('rPass',true);    se('eRPass',true);    ok=false; } else { fe('rPass',false);    se('eRPass',false); }
+  if (!ok) return;
+
+  setBtnLoad('registerBtn','registerSpin','registerTxt',true);
+  try {
+    const payload = { action:'registerUser', name, college, semester:sem, email, mobile:mob, password:pass,
+                      timestamp: new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}) };
+    const res  = await fetch(SHEET_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      studentName = name;
+      studentMob  = mob;
+      studentData = { name, college, semester:sem, email, mobile:mob };
+      saveSession(studentData);
+      showToast('Registration successful! 🎉');
+      await afterAuthSuccess();
+    } else {
+      showToast(data.message || 'Registration failed.');
+    }
+  } catch(_) {
+    showToast('Network error. Try again.');
+  }
+  setBtnLoad('registerBtn','registerSpin','registerTxt',false);
+}
+
+async function afterAuthSuccess() {
+  // Check if already submitted this quiz
+  try {
+    const res  = await fetch(SHEET_URL + '?action=checkSubmission&quiz=' + enc(quizName) + '&mobile=' + enc(studentMob));
+    const data = await res.json();
+    if (data.alreadySubmitted) {
+      finalScore   = data.score    || 0;
+      finalCorrect = data.correct  || 0;
+      finalNeg     = data.negative || 0;
+      fillScoreScreen();
+      showScreen('screenScore');
+      loadLeaderboard();
+      showToast('Aapne pehle yeh quiz de diya hai!');
+      return;
+    }
+  } catch(_) {}
+  showPreQuestion();
+}
+
+// ════════ PRE-QUESTION ════════
+function showPreQuestion() {
+  document.getElementById('preQName').textContent = studentName.split(' ')[0];
+  document.getElementById('preYes').classList.remove('sel');
+  document.getElementById('preNo').classList.remove('sel');
+  preQAnswer = null;
+  document.getElementById('preNextBtn').disabled = true;
+  showScreen('screenPreQ');
+}
+
+function setPreQ(val) {
+  preQAnswer = val;
+  document.getElementById('preYes').classList.toggle('sel', val === 'yes');
+  document.getElementById('preNo').classList.toggle('sel', val === 'no');
+  document.getElementById('preNextBtn').disabled = false;
+}
+
+function startActualQuiz() {
+  currentQ      = 0;
+  answers       = {};
+  submitPending = false;
+  document.getElementById('stickyQuizNav').style.display = 'block';
+  renderQ(0);
+  showScreen('screenQuiz');
+}
+
+// ════════ CSV PARSING ════════
+async function fetchCSV(path) {
+  const res = await fetch(path);
+  if (!res.ok) throw new Error('HTTP ' + res.status + ' — file not found: ' + path);
+  return res.text();
+}
+function parseCSV(raw) {
+  const lines = raw.trim().replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
+  const qs = [];
+  let start = 0;
+  const firstCols = splitRow(lines[0]);
+  if (firstCols.length > 0 && isNaN(parseInt(firstCols[5])) && !/^\d/.test(firstCols[0])) start = 1;
+  for (let i = start; i < lines.length; i++) {
+    const c = splitRow(lines[i]);
+    if (c.length < 6) continue;
+    const qText = c[0].trim();
+    const opts  = [c[1].trim(), c[2].trim(), c[3].trim(), c[4].trim()];
+    const ans   = parseInt(c[5].trim(), 10);
+    // Column 7 = time limit for display purposes (default 15)
+    const timeLimit = c[6] ? parseInt(c[6].trim(), 10) || 15 : 15;
+    if (!qText || isNaN(ans) || ans < 1 || ans > 4) continue;
+    qs.push({ q:qText, opts, ans, timeLimit });
+  }
+  return qs;
+}
+function splitRow(row) {
+  const out=[]; let cur='',q=false;
+  for (let i=0;i<row.length;i++){
+    const ch=row[i];
+    if(ch==='"'){q=!q;continue;}
+    if(ch===','&&!q){out.push(cur);cur='';continue;}
+    cur+=ch;
+  }
+  out.push(cur); return out;
+}
+
+// ════════ TIMER ════════
+function startTimer(timeLimit) {
+  clearInterval(timerInterval);
+  qStartTime   = Date.now();
+  currentQTime = 0;
+  const circumference = 2 * Math.PI * 18; // r=18
+  const circle = document.getElementById('timerCircle');
+  const numEl  = document.getElementById('timerNum');
+  const ptsEl  = document.getElementById('timerPts');
+
+  function tick() {
+    currentQTime = (Date.now() - qStartTime) / 1000;
+    const secs   = Math.round(currentQTime);
+    numEl.textContent = secs + 's';
+
+    // Offset — fill drains over timeLimit visual
+    const visual = Math.min(currentQTime / (timeLimit * 2), 1); // slow drain for UX
+    circle.style.strokeDashoffset = circumference * visual;
+
+    // Color + points
+    let pts, cls, color;
+    if (currentQTime < FAST_SEC)   { pts = PTS_FAST;   cls='';       color='var(--green)'; }
+    else if (currentQTime < MEDIUM_SEC) { pts = PTS_MEDIUM; cls='medium'; color='var(--blue)'; }
+    else                            { pts = PTS_SLOW;   cls='slow';   color='var(--orange)'; }
+
+    circle.style.stroke    = color;
+    ptsEl.textContent      = '+' + pts + ' pts';
+    ptsEl.className        = 'timer-pts-val ' + cls;
+  }
+  tick();
+  timerInterval = setInterval(tick, 500);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  return currentQTime;
+}
+
+function getTimePts(seconds) {
+  if (seconds < FAST_SEC)    return PTS_FAST;
+  if (seconds < MEDIUM_SEC)  return PTS_MEDIUM;
+  return PTS_SLOW;
+}
+
+// ════════ QUIZ RENDER ════════
+function renderQ(idx) {
+  stopTimer();
+  const q = questions[idx];
+  const n = questions.length;
+  currentQ = idx;
+
+  document.getElementById('qCur').textContent       = idx + 1;
+  document.getElementById('qTot').textContent       = n;
+  document.getElementById('qBadge').textContent     = 'Q' + (idx + 1);
+  document.getElementById('qText').textContent      = q.q;
+  document.getElementById('qStudName').textContent  = studentName;
+  document.getElementById('qMarksBadge').textContent= 'max +' + PTS_FAST;
+  document.getElementById('confirmBanner').style.display = 'none';
+  submitPending = false;
+
+  const attempted = Object.keys(answers).length;
+  document.getElementById('qAtt').textContent = attempted + ' attempted';
+  document.getElementById('progFill').style.width = ((idx + 1) / n * 100) + '%';
+
+  // Live score
+  let liveScore = 0;
+  Object.values(answers).forEach(a => { liveScore += (a.pts || 0); });
+  document.getElementById('liveTotalScore').textContent = liveScore + ' pts';
+
+  // Options
+  const LABELS = ['A','B','C','D'];
+  const cont = document.getElementById('optsCont');
+  cont.innerHTML = '';
+  const prevAns = answers[idx];
+  q.opts.forEach((opt, i) => {
+    if (!opt) return;
+    const num = i + 1;
+    const sel = prevAns && prevAns.opt === num;
+    const d   = document.createElement('div');
+    d.className = 'opt' + (sel ? ' selected' : '');
+    d.innerHTML = `<div class="opt-mark">${LABELS[i]}</div><div class="opt-text">${esc(opt)}</div>`;
+    d.onclick   = () => selectOpt(idx, num);
+    cont.appendChild(d);
+  });
+
+  // Nav
+  document.getElementById('btnPrev').disabled        = idx === 0;
+  const isLast = idx === n - 1;
+  document.getElementById('btnNext').style.display   = isLast ? 'none'  : 'flex';
+  document.getElementById('btnSub').style.display    = isLast ? 'flex'  : 'none';
+  document.getElementById('btnSub').textContent      = 'Submit ✓';
+  document.getElementById('btnSub').onclick          = onSubmitClick;
+
+  // Start timer only if not already answered
+  if (!prevAns) startTimer(q.timeLimit || 15);
+  else {
+    // Show static timer for already-answered
+    document.getElementById('timerNum').textContent = Math.round(prevAns.time || 0) + 's';
+    const pts = prevAns.pts || 0;
+    document.getElementById('timerPts').textContent  = (pts > 0 ? '+' : '') + pts + ' pts';
+    document.getElementById('timerPts').className    = 'timer-pts-val' + (pts === PTS_FAST ? '' : pts === PTS_MEDIUM ? ' medium' : pts > 0 ? ' slow' : '');
+    document.getElementById('timerCircle').style.stroke = pts === PTS_FAST ? 'var(--green)' : pts === PTS_MEDIUM ? 'var(--blue)' : 'var(--orange)';
+  }
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectOpt(qIdx, optNum) {
+  // Only record time if first selection for this question
+  if (!answers[qIdx]) {
+    const elapsed = stopTimer();
+    const pts     = getTimePts(elapsed);
+    answers[qIdx] = { opt: optNum, time: elapsed, pts };
+  } else {
+    answers[qIdx].opt = optNum; // allow change, keep original time
+  }
+  renderQ(qIdx);
+}
+
+function navQ(dir) {
+  const next = currentQ + dir;
+  if (next >= 0 && next < questions.length) renderQ(next);
+}
+
+function onSubmitClick() {
+  const unattempted = questions.length - Object.keys(answers).length;
+  if (unattempted > 0 && !submitPending) {
+    document.getElementById('unattempted').textContent = unattempted;
+    document.getElementById('confirmBanner').style.display = 'block';
+    document.getElementById('btnSub').textContent = 'Confirm Submit ✓';
+    submitPending = true;
+    return;
+  }
+  stopTimer();
+  document.getElementById('stickyQuizNav').style.display = 'none';
+  showScreen('screenPostQ');
+}
+
+// ════════ POST QUESTION + SUBMIT ════════
+async function submitWithFeedback() {
+  feedbackText = document.getElementById('feedbackText').value.trim();
+  setBtnLoad('postBtn','postSpin','postTxt',true);
+  // Calculate score
+  let correct = 0, neg = 0, pts = 0;
+  questions.forEach((q, i) => {
+    const a = answers[i];
+    if (!a) return;
+    if (a.opt === q.ans) { correct++; pts += a.pts; }
+    else                  { neg++; pts += PTS_WRONG; }
+  });
+  finalScore   = pts;
+  finalCorrect = correct;
+  finalNeg     = neg;
+
+  buildReview();
+  fillScoreScreen();
+  submitToSheet(correct, neg).catch(console.error);
+  await loadLeaderboard();
+  setBtnLoad('postBtn','postSpin','postTxt',false);
+  showScreen('screenReview');
+}
+
+// ════════ REVIEW ════════
+function buildReview() {
+  const wrong = finalNeg;
+  document.getElementById('rsC').textContent         = finalCorrect;
+  document.getElementById('rsW').textContent         = wrong;
+  document.getElementById('rsNeg').textContent       = wrong * Math.abs(PTS_WRONG);
+  document.getElementById('rsS').textContent         = finalScore;
+  document.getElementById('revNameLine').textContent = studentName + ' ka result';
+
+  const LABELS = ['A','B','C','D'];
+  const list   = document.getElementById('revList');
+  list.innerHTML = '';
+
+  questions.forEach((q, i) => {
+    const a         = answers[i] || null;
+    const selOpt    = a ? a.opt : null;
+    const isCorrect = selOpt === q.ans;
+    const skipped   = !selOpt;
+    const timeSec   = a ? Math.round(a.time || 0) : null;
+    const ptsEarned = a ? (isCorrect ? a.pts : PTS_WRONG) : 0;
+
+    let optsHtml = '';
+    q.opts.forEach((opt, oi) => {
+      if (!opt) return;
+      const num = oi + 1;
+      let cls = 'rev-opt on', tag = '';
+      if (num === q.ans)                        { cls = 'rev-opt oc'; tag = ' ✓ Correct'; }
+      if (num === selOpt && !isCorrect)          { cls = 'rev-opt owx'; tag = ' ✗ Aapka answer'; }
+      if (num === selOpt && isCorrect)           { cls = 'rev-opt oc'; tag = ' ✓ Correct (Aapka answer)'; }
+      optsHtml += `<div class="${cls}"><div class="rev-opt-ltr">${LABELS[oi]}</div><div>${esc(opt)}${tag?'<strong>'+tag+'</strong>':''}</div></div>`;
+    });
+    if (skipped) optsHtml += `<div class="rev-opt owx"><div class="rev-opt-ltr">○</div><div>Attempt nahi kiya — 0 marks</div></div>`;
+
+    const hdrCls  = isCorrect ? 'c' : skipped ? 'sk' : 'w';
+    const ptsCls  = isCorrect ? 'c' : skipped ? 'sk' : 'w';
+    const ptsText = isCorrect ? '+' + ptsEarned : skipped ? '0' : ptsEarned + ' (neg)';
+
+    const item = document.createElement('div');
+    item.className = 'rev-item';
+    item.style.animationDelay = (i * .03) + 's';
+    item.innerHTML = `
+      <div class="rev-hdr ${hdrCls}">
+        <span class="rev-status">${isCorrect ? '✅' : skipped ? '⭕' : '❌'}</span>
+        <span class="rev-q-text">Q${i+1}. ${esc(q.q)}</span>
+        ${timeSec !== null ? `<span class="rev-time-badge">${timeSec}s</span>` : ''}
+        <span class="rev-pts-badge ${ptsCls}">${ptsText}</span>
+      </div>
+      <div class="rev-opts">${optsHtml}</div>`;
+    list.appendChild(item);
+  });
+}
+
+// ════════ SCORE SCREEN ════════
+function fillScoreScreen() {
+  const maxPts = questions.length * PTS_FAST;
+  const pct    = maxPts > 0 ? Math.round(Math.max(0, finalScore) / maxPts * 100) : 0;
+  let emoji = '😐', tag = 'Keep trying!';
+  if      (pct >= 90) { emoji = '🏆'; tag = 'Outstanding! Class Topper! 🌟'; }
+  else if (pct >= 75) { emoji = '🎉'; tag = 'Excellent Performance!'; }
+  else if (pct >= 60) { emoji = '👍'; tag = 'Good Job! Keep it up'; }
+  else if (pct >= 40) { emoji = '📚'; tag = 'Thoda aur padhna padega'; }
+  else if (finalScore < 0) { emoji = '😅'; tag = 'Oops! Negative marks aa gaye!'; }
+  else                { emoji = '💪'; tag = 'Practice more — you got this!'; }
+
+  document.getElementById('sEmoji').textContent = emoji;
+  document.getElementById('sVal').textContent   = finalScore;
+  document.getElementById('sOut').textContent   = 'out of ' + maxPts + ' max pts (' + pct + '%)';
+  document.getElementById('sName').textContent  = studentName;
+  document.getElementById('sTag').textContent   = tag;
+  document.getElementById('sBreakdown').innerHTML =
+    `<span class="sbd">✅ ${finalCorrect} correct</span>` +
+    `<span class="sbd">❌ ${finalNeg} wrong (${finalNeg * Math.abs(PTS_WRONG)} neg)</span>` +
+    `<span class="sbd">⭕ ${questions.length - finalCorrect - finalNeg} skipped</span>`;
+}
+
+// ════════ LEADERBOARD ════════
+async function loadLeaderboard() {
+  const cont = document.getElementById('lbCont');
+  cont.innerHTML = '<div class="empty-state"><div class="ei">⏳</div>Loading...</div>';
+  try {
+    const res  = await fetch(SHEET_URL + '?action=getLeaderboard&quiz=' + enc(quizName));
+    const data = await res.json();
+    if (!data.scores || data.scores.length === 0) {
+      cont.innerHTML = '<div class="empty-state"><div class="ei">📭</div>Abhi koi score nahi hai.</div>';
+      return;
+    }
+    const sorted = [...data.scores].sort((a, b) => b.score - a.score);
+    cont.innerHTML = '';
+    sorted.forEach((s, i) => {
+      const isYou   = s.mobile === studentMob;
+      const rankCls = i===0?'r1':i===1?'r2':i===2?'r3':'rn';
+      const d = document.createElement('div');
+      d.className = 'lb-item';
+      d.style.animationDelay = (i * .04) + 's';
+      d.innerHTML = `
+        <div class="lb-rank ${rankCls}">${i+1}</div>
+        <div class="lb-info">
+          <div class="lb-name">${esc(s.name)}${isYou?'<span class="lb-you">You</span>':''}</div>
+          <div class="lb-college">${esc(s.college||'')}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="lb-score">${s.score}</div>
+          <div class="lb-score-sub">pts</div>
+        </div>`;
+      cont.appendChild(d);
+    });
+  } catch(_) {
+    cont.innerHTML = '<div class="empty-state"><div class="ei">⚠️</div>Leaderboard load nahi hua.</div>';
+  }
+}
+
+// ════════ SUBMIT TO SHEET ════════
+async function submitToSheet(correct, neg) {
+  // Build detailed answer log for sheet
+  const answerLog = questions.map((q, i) => {
+    const a = answers[i];
+    return {
+      q: i+1,
+      selected: a ? a.opt : null,
+      correct:  q.ans,
+      result:   !a ? 'skip' : a.opt === q.ans ? 'correct' : 'wrong',
+      time:     a ? Math.round(a.time) : null,
+      pts:      a ? (a.opt === q.ans ? a.pts : PTS_WRONG) : 0,
+    };
+  });
+
+  const payload = {
+    action:       'submitQuiz',
+    quiz:         quizName,
+    name:         studentName,
+    mobile:       studentMob,
+    college:      studentData.college || '',
+    semester:     studentData.semester || '',
+    score:        finalScore,
+    correct,
+    wrong:        neg,
+    total:        questions.length,
+    negative:     neg * Math.abs(PTS_WRONG),
+    attendedClass: preQAnswer || 'no_answer',
+    feedback:     feedbackText,
+    timestamp:    new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}),
+    answers:      JSON.stringify(answerLog),
+  };
+
+  await fetch(SHEET_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload),
+  });
+}
+
+// ════════ WHATSAPP SHARE ════════
+function shareWA() {
+  const base = window.location.href.split('?')[0];
+  const link = base + '?q=' + enc(quizName);
+  const maxPts = questions.length * PTS_FAST;
+  const msg = `🎯 Maine *${quizName.toUpperCase()}* Quiz diya!\n\n` +
+              `📊 Score: *${finalScore}/${maxPts}* pts\n` +
+              `✅ ${finalCorrect} correct · ❌ ${finalNeg} wrong\n` +
+              `👤 ${studentName}\n\n` +
+              `Kya tum beat kar sakte ho? 🔥\nTry karo: ${link}`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ════════ UTILS ════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // Hide sticky nav on non-quiz screens
+  if (id !== 'screenQuiz') document.getElementById('stickyQuizNav').style.display = 'none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setLoad(main,sub){
+  document.getElementById('loadText').textContent=main;
+  document.getElementById('loadSub').textContent=sub;
+}
+function showError(msg){
+  document.getElementById('errMsg').innerHTML=msg;
+  showScreen('screenError');
+}
+function setBtnLoad(btnId,spinId,txtId,loading){
+  document.getElementById(btnId).disabled         = loading;
+  document.getElementById(spinId).style.display   = loading?'block':'none';
+  document.getElementById(txtId).style.display    = loading?'none':'inline';
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function enc(s){ return encodeURIComponent(s); }
+</script>
+</body>
+</html>
