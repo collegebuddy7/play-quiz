@@ -538,7 +538,7 @@ select.fi{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
                 placeholder="Kuch bhi likho — topic, difficulty, suggestions... 📝"></textarea>
     </div>
   </div>
-  <button class="btn btn-gold" onclick="submitWithFeedback()">
+  <button class="btn btn-gold" id="postBtn" onclick="submitWithFeedback()">
     <div class="spin" id="postSpin"></div>
     <span id="postTxt">Submit &amp; See Results 🎯</span>
   </button>
@@ -600,7 +600,7 @@ select.fi{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 ══════════════════════════════════════════════════ -->
 <script>
 // ════════ CONFIG — paste your deployed Google Script URL here ════════
-const SHEET_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID_HERE/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzlYbKWmbdnFQJbq9uBCmt56kobFGoszXwYr2nPDkEdfPuNpUBUs1SUNV4JkpBuxyLgNw/exec';
 
 const COLLEGES = [
   "A.B.S. College, Lalganj","B.M.D. College, Dayalpur","CN College, Sahebganj",
@@ -814,7 +814,7 @@ async function handleRegister() {
   try {
     const payload = { action:'registerUser', name, college, semester:sem, email, mobile:mob, password:pass,
                       timestamp: new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}) };
-    const res  = await fetch(SHEET_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    const res  = await fetch(SHEET_URL, { method:'POST', mode: 'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
     const data = await res.json();
     if (data.status === 'ok') {
       studentName = name;
