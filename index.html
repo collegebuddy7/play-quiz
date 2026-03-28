@@ -835,9 +835,14 @@ async function handleRegister() {
 
   setBtnLoad('registerBtn','registerSpin','registerTxt',true);
   try {
-    const payload = { action:'registerUser', name, college, semester:sem, email, mobile:mob, password:pass,
-                      timestamp: new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}) };
-    const res  = await fetch(SHEET_URL, { method:'POST', mode: 'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    /* const payload = { action:'registerUser', name, college, semester:sem, email, mobile:mob, password:pass,
+                      timestamp: new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}) }; */
+    const params = new URLSearchParams({
+      action:'registerUser', name, college, semester:sem, email,
+      mobile:mob, password:pass,
+      timestamp: new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})
+    });
+    const res  = await fetch(SHEET_URL + '?' + params.toString());
     const data = await res.json();
     if (data.status === 'ok') {
       studentName = name;
