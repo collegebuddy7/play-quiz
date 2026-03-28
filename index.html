@@ -757,10 +757,10 @@ async function checkIfAlreadyDone(mobile) {
   loadLeaderboard();
   showToast('Welcome back, ' + studentName + '! Aapka score dekho 👇');
 } else {
-      showAuthScreen();
+      showPreQuestion();
     }
   } catch(_) {
-    showAuthScreen();
+    showPreQuestion();
   }
 }
 
@@ -1044,15 +1044,30 @@ function renderQ(idx) {
 }
 
 function selectOpt(qIdx, optNum) {
-  // Only record time if first selection for this question
+  // First click on this question — lock the time & pts, but keep timer running
   if (!answers[qIdx]) {
-    const elapsed = stopTimer();
+    const elapsed = currentQTime; // read current time WITHOUT stopping timer
     const pts     = getTimePts(elapsed);
     answers[qIdx] = { opt: optNum, time: elapsed, pts };
   } else {
-    answers[qIdx].opt = optNum; // allow change, keep original time
+    answers[qIdx].opt = optNum; // allow change of answer, keep original locked time
   }
-  renderQ(qIdx);
+
+  // Re-highlight options WITHOUT calling renderQ (which stops the timer)
+  const LABELS = ['A','B','C','D'];
+  const cont = document.getElementById('optsCont');
+  cont.querySelectorAll('.opt').forEach((el, i) => {
+    const num = i + 1;
+    el.className = 'opt' + (num === optNum ? ' selected' : '');
+    el.querySelector('.opt-mark').textContent = LABELS[i];
+  });
+
+  // Update attempted count & live score
+  const attempted = Object.keys(answers).length;
+  document.getElementById('qAtt').textContent = attempted + ' attempted';
+  let liveScore = 0;
+  Object.values(answers).forEach(a => { liveScore += (a.pts || 0); });
+  document.getElementById('liveTotalScore').textContent = liveScore + ' pts';
 }
 
 function navQ(dir) {
