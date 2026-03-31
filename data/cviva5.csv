@@ -1,0 +1,21 @@
+Question,Option1,Option2,Option3,Option4,Answer
+What is conditional compilation?,Compile based on condition,Run-time execution,Compile all code,Loop control,1
+What is binary file?,Stores readable text,Stores binary data,Stores only images,Stores strings only,2
+What is main() function?,Loop function,Entry point,File function,Ending point,2
+What is ftell()?,Returns current file position,Closes file,Opens file,Moves file pointer,1
+What is execution?,Running compiled program,Writing code,Debugging code,Compiling code,1
+What is r mode?,Append mode,Write mode,Delete mode,Read only mode,4
+What is macro?,Variable,Loop,Function call,Code fragment using #define,4
+What is file mode?,File size,File location,Way file is opened,File type,3
+What is compilation?,Deleting errors,Running code,Writing code,Converting to machine code,4
+What is implicit conversion?,Pointer conversion,Automatic conversion,Manual conversion,String conversion,2
+What is random access file?,Sequential access,Temporary file,Direct access anywhere,Read-only file,3
+What is a mode in file?,Closes file,Deletes file,Reads file,Adds data at end,4
+What is text file?,Binary data file,Human-readable data file,System file,Image file,2
+What is preprocessor?,Executes code,Debugs program,Handles directives before compile,Runs program,3
+What is sizeof operator?,Returns address,Returns value,Returns type,Returns memory size,4
+What is w mode?,Write and overwrite,Append data,Read only,Close file,1
+What is fseek()?,Reads file,Deletes file,Moves file pointer position,Closes file,3
+What is error handling?,Handling runtime errors,Handling arrays,Handling loops,Handling variables,1
+What is type casting?,Reading input,Changing variable name,Converting data type,Allocating memory,3
+What is explicit conversion?,Automatic conversion,Manual conversion,Loop conversion,File conversion,2
